@@ -12,7 +12,7 @@
  */
 
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
-import { join, relative, basename } from 'node:path';
+import { join, relative, basename, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { detectSprints } from './detect-sprints.js';
 
@@ -48,7 +48,7 @@ function walk(dir, filter) {
       if (entry.name.startsWith('.') || entry.name === 'node_modules') continue;
       results.push(...walk(full, filter));
     } else {
-      const rel = relative(ROOT, full);
+      const rel = relative(ROOT, full).split(sep).join('/');
       if (!filter || filter(rel, entry.name)) results.push(rel);
     }
   }
@@ -152,7 +152,7 @@ try {
 // 3. Map files to topics via claim artifacts
 for (const [filePath, fileInfo] of Object.entries(allFiles)) {
   for (const claim of claims.claims) {
-    if (claim.source?.artifact && filePath.includes(claim.source.artifact.replace(/^.*\/prototypes\//, 'prototypes/'))) {
+    if (claim.source?.artifact && filePath.includes(claim.source.artifact.replace(/^.*[/\\]prototypes[/\\]/, 'prototypes/'))) {
       if (!fileInfo.topics.includes(claim.topic)) {
         fileInfo.topics.push(claim.topic);
       }

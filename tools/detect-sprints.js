@@ -143,7 +143,7 @@ function analyzeSprint(root) {
 
   const phase = meta.phase || 'unknown';
   const isArchived = phase === 'archived' || phase === 'complete';
-  const isExample = root.sprintPath.startsWith('examples/');
+  const isExample = root.sprintPath.startsWith('examples/') || root.sprintPath.startsWith('examples\\');
 
   let status;
   if (isArchived) {
