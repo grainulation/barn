@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>grove — Public tools for the grainulator ecosystem</title>
 <meta name="description" content="Sprint detection, manifest generation, templates, and shared utilities for the grainulator research ecosystem.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="grove — Public tools for the grainulator ecosystem">
+<meta property="og:description" content="Sprint detection, manifest generation, templates, and shared utilities for the grainulator research ecosystem.">
+<meta property="og:url" content="https://grainulator.github.io/grove/">
+<link rel="canonical" href="https://grainulator.github.io/grove/">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2309090b'/><text x='32' y='48' text-anchor='middle' font-family='system-ui,sans-serif' font-weight='800' font-size='44' fill='%2310b981'>g</text></svg>">
 <style>
 :root {
@@ -131,7 +136,7 @@ footer a{color:var(--text-2)}
       <a href="#quickstart">Quick Start</a>
       <a href="#example">Example</a>
       <a href="#features">Features</a>
-      <a href="https://github.com/aid-ninja/grove" class="nav-cta">GitHub</a>
+      <a href="https://github.com/grainulator/grove" class="nav-cta">GitHub</a>
     </div>
   </div>
 </nav>
@@ -185,7 +190,7 @@ footer a{color:var(--text-2)}
     <p class="section-sub rv rv-d2">A mono-repo with multiple research sprints. Grove finds them all, shows their status, and generates a manifest.</p>
 
     <div class="term-block rv rv-d3">
-<span class="prompt">$</span> <span class="cmd">grove detect-sprints --json</span>
+<span class="prompt">$</span> <span class="cmd">npx @grainulator/grove detect-sprints --json</span>
 
 <span class="output">{
   "sprints": [
@@ -196,7 +201,7 @@ footer a{color:var(--text-2)}
   "active_sprint": "sprints/graphql-migration"
 }</span>
 
-<span class="prompt">$</span> <span class="cmd">grove generate-manifest --root sprints/graphql-migration</span>
+<span class="prompt">$</span> <span class="cmd">npx @grainulator/grove generate-manifest --root sprints/graphql-migration</span>
 
 <span class="output">Manifest written to wheat-manifest.json (<span class="num">4.2KB</span>)
   Topics: <span class="num">6</span>  Claims: <span class="num">14</span>  Files: <span class="num">8</span>
@@ -268,19 +273,19 @@ footer a{color:var(--text-2)}
     <h2 class="section-title rv rv-d1">The shared foundation</h2>
     <p class="section-sub rv rv-d2" style="margin-left:auto;margin-right:auto">Grove provides the tools that the rest of the ecosystem relies on.</p>
     <div class="eco-grid rv rv-d3">
-      <a href="https://github.com/aid-ninja/wheat" class="eco-chip"><span class="eco-dot" style="background:#fbbf24"></span>wheat -- research sprints</a>
-      <a href="https://github.com/aid-ninja/farmer" class="eco-chip"><span class="eco-dot" style="background:#22c55e"></span>farmer -- permission dashboard</a>
-      <a href="https://github.com/aid-ninja/mill" class="eco-chip"><span class="eco-dot" style="background:#d97706"></span>mill -- export &amp; publish</a>
-      <a href="https://github.com/aid-ninja/silo" class="eco-chip"><span class="eco-dot" style="background:#3b82f6"></span>silo -- knowledge packs</a>
-      <a href="https://github.com/aid-ninja/harvest" class="eco-chip"><span class="eco-dot" style="background:#f97316"></span>harvest -- analytics</a>
-      <a href="https://github.com/aid-ninja/field" class="eco-chip"><span class="eco-dot" style="background:#a16207"></span>field -- orchestration</a>
+      <a href="https://grainulator.github.io/wheat/" class="eco-chip"><span class="eco-dot" style="background:#fbbf24"></span>wheat -- research sprints</a>
+      <a href="https://grainulator.github.io/farmer/" class="eco-chip"><span class="eco-dot" style="background:#22c55e"></span>farmer -- permission dashboard</a>
+      <a href="https://grainulator.github.io/mill/" class="eco-chip"><span class="eco-dot" style="background:#d97706"></span>mill -- export &amp; publish</a>
+      <a href="https://grainulator.github.io/silo/" class="eco-chip"><span class="eco-dot" style="background:#3b82f6"></span>silo -- knowledge packs</a>
+      <a href="https://grainulator.github.io/harvest/" class="eco-chip"><span class="eco-dot" style="background:#f97316"></span>harvest -- analytics</a>
+      <a href="https://grainulator.github.io/field/" class="eco-chip"><span class="eco-dot" style="background:#a16207"></span>field -- orchestration</a>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="container">
-    <p>grove &middot; MIT License &middot; <a href="https://github.com/aid-ninja/grove">GitHub</a> &middot; <a href="https://github.com/aid-ninja/grove#readme">Docs</a></p>
+    <p>grove &middot; MIT License &middot; <a href="https://github.com/grainulator/grove">GitHub</a> &middot; <a href="https://github.com/grainulator/grove#readme">Docs</a></p>
   </div>
 </footer>
 
