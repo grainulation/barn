@@ -3,8 +3,8 @@
  * build-pdf.js — Convert markdown to PDF via npx md-to-pdf
  *
  * Usage:
- *   grove build-pdf <markdown-file>
- *   grove build-pdf output/brief.md
+ *   barn build-pdf <markdown-file>
+ *   barn build-pdf output/brief.md
  *
  * Uses npx to invoke md-to-pdf, so no local install is required.
  * Zero npm dependencies (Node built-in only).
@@ -19,10 +19,10 @@ if (!target || target === '--help' || target === '-h') {
   console.log(`build-pdf — convert markdown to PDF
 
 Usage:
-  grove build-pdf <markdown-file>
+  barn build-pdf <markdown-file>
 
 Example:
-  grove build-pdf output/brief.md
+  barn build-pdf output/brief.md
 
 Uses npx md-to-pdf under the hood. No local install needed.`);
   process.exit(target ? 0 : 1);

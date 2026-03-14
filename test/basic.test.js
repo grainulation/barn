@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * basic.test.js — Sanity tests for grove tools
+ * basic.test.js — Sanity tests for barn tools
  *
  * Runs without any test framework. Zero dependencies.
  * Exit code 0 = all pass, 1 = failures.
@@ -35,7 +35,7 @@ const expectedFiles = [
   'package.json',
   'README.md',
   'LICENSE',
-  'bin/grove.js',
+  'bin/barn.js',
   'tools/detect-sprints.js',
   'tools/generate-manifest.js',
   'tools/build-pdf.js',
@@ -54,10 +54,10 @@ console.log('\n--- package.json ---');
 
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
 
-assert(pkg.name === '@grainulator/grove', 'name is @grainulator/grove');
+assert(pkg.name === '@grainulator/barn', 'name is @grainulator/barn');
 assert(pkg.type === 'module', 'type is module (ESM)');
 assert(pkg.license === 'MIT', 'license is MIT');
-assert(pkg.bin?.grove === './bin/grove.js', 'bin points to grove.js');
+assert(pkg.bin?.barn === './bin/barn.js', 'bin points to barn.js');
 assert(!pkg.dependencies || Object.keys(pkg.dependencies).length === 0, 'zero runtime dependencies');
 
 // ─── Template checks ────────────────────────────────────────────────────────
@@ -80,15 +80,15 @@ assert(dashboard.includes('.evidence-bar'), 'dashboard has evidence bars');
 console.log('\n--- CLI ---');
 
 try {
-  const helpOutput = execFileSync(process.execPath, [join(ROOT, 'bin/grove.js'), 'help'], {
+  const helpOutput = execFileSync(process.execPath, [join(ROOT, 'bin/barn.js'), 'help'], {
     timeout: 5000,
     stdio: ['ignore', 'pipe', 'pipe'],
   }).toString();
-  assert(helpOutput.includes('detect-sprints'), 'grove help lists detect-sprints');
-  assert(helpOutput.includes('generate-manifest'), 'grove help lists generate-manifest');
-  assert(helpOutput.includes('build-pdf'), 'grove help lists build-pdf');
+  assert(helpOutput.includes('detect-sprints'), 'barn help lists detect-sprints');
+  assert(helpOutput.includes('generate-manifest'), 'barn help lists generate-manifest');
+  assert(helpOutput.includes('build-pdf'), 'barn help lists build-pdf');
 } catch (e) {
-  assert(false, `grove help runs without error: ${e.message}`);
+  assert(false, `barn help runs without error: ${e.message}`);
 }
 
 // ─── detect-sprints --help check ────────────────────────────────────────────
@@ -112,8 +112,8 @@ try {
 console.log('\n--- Site ---');
 
 const site = readFileSync(join(ROOT, 'site/index.html'), 'utf8');
-assert(site.includes('#22c55e'), 'site uses grove green accent');
-assert(site.includes('@grainulator/grove'), 'site mentions package name');
+assert(site.includes('#ef4444'), 'site uses barn brown accent');
+assert(site.includes('@grainulator/barn'), 'site mentions package name');
 assert(site.includes('detect-sprints'), 'site documents detect-sprints');
 assert(site.includes('generate-manifest'), 'site documents generate-manifest');
 assert(site.includes('build-pdf'), 'site documents build-pdf');
@@ -128,7 +128,7 @@ console.log('\n--- detect-sprints: functional ---');
 
 // detectSprints finds root claims.json
 {
-  const tmp = mkdtempSync(join(tmpdir(), 'grove-ds-'));
+  const tmp = mkdtempSync(join(tmpdir(), 'barn-ds-'));
   writeFileSync(join(tmp, 'claims.json'), JSON.stringify({
     meta: { phase: 'active', question: 'Test question?', initiated: '2026-01-01' },
     claims: [
@@ -145,7 +145,7 @@ console.log('\n--- detect-sprints: functional ---');
 
 // detectSprints finds sprints in examples/ subdirs
 {
-  const tmp = mkdtempSync(join(tmpdir(), 'grove-ds-'));
+  const tmp = mkdtempSync(join(tmpdir(), 'barn-ds-'));
   mkdirSync(join(tmp, 'examples', 'sprint-a'), { recursive: true });
   writeFileSync(join(tmp, 'examples', 'sprint-a', 'claims.json'), JSON.stringify({
     meta: { phase: 'archived', question: 'Old sprint' },
@@ -161,7 +161,7 @@ console.log('\n--- detect-sprints: functional ---');
 
 // detectSprints marks the best candidate as active
 {
-  const tmp = mkdtempSync(join(tmpdir(), 'grove-ds-'));
+  const tmp = mkdtempSync(join(tmpdir(), 'barn-ds-'));
   writeFileSync(join(tmp, 'claims.json'), JSON.stringify({
     meta: { phase: 'research', question: 'Current sprint', initiated: '2026-03-01' },
     claims: [
@@ -176,7 +176,7 @@ console.log('\n--- detect-sprints: functional ---');
 
 // detectSprints returns empty for dir with no claims.json
 {
-  const tmp = mkdtempSync(join(tmpdir(), 'grove-ds-'));
+  const tmp = mkdtempSync(join(tmpdir(), 'barn-ds-'));
   const result = detectSprints(tmp);
   assert(result.sprints.length === 0, 'detectSprints returns empty for no claims');
   assert(result.active === null, 'detectSprints active is null when no sprints');
@@ -202,7 +202,7 @@ try {
 // ─── generate-manifest: functional with real claims ──────────────────────────
 
 {
-  const tmp = mkdtempSync(join(tmpdir(), 'grove-gm-'));
+  const tmp = mkdtempSync(join(tmpdir(), 'barn-gm-'));
   writeFileSync(join(tmp, 'claims.json'), JSON.stringify({
     meta: { phase: 'active', question: 'Manifest test' },
     claims: [
@@ -215,7 +215,7 @@ try {
       stdio: ['ignore', 'pipe', 'pipe'],
     });
     const manifest = JSON.parse(readFileSync(join(tmp, 'wheat-manifest.json'), 'utf8'));
-    assert(manifest.generator === '@grainulator/grove generate-manifest', 'manifest has correct generator');
+    assert(manifest.generator === '@grainulator/barn generate-manifest', 'manifest has correct generator');
     assert(manifest.topics && typeof manifest.topics === 'object', 'manifest has topics object');
     assert(manifest.topics['infra'], 'manifest has the infra topic from claims');
     assert(manifest.topics['infra'].claims.includes('r001'), 'manifest topic contains claim r001');
@@ -261,29 +261,29 @@ try {
 
 console.log('\n--- CLI edge cases ---');
 
-// grove unknown command exits with error
+// barn unknown command exits with error
 {
   try {
-    execFileSync(process.execPath, [join(ROOT, 'bin/grove.js'), 'nonexistent-cmd'], {
+    execFileSync(process.execPath, [join(ROOT, 'bin/barn.js'), 'nonexistent-cmd'], {
       timeout: 5000,
       stdio: ['ignore', 'pipe', 'pipe'],
     });
-    assert(false, 'grove should exit with error on unknown command');
+    assert(false, 'barn should exit with error on unknown command');
   } catch (e) {
-    assert(e.status === 1, 'grove exits 1 for unknown command');
+    assert(e.status === 1, 'barn exits 1 for unknown command');
   }
 }
 
-// grove -h also shows help
+// barn -h also shows help
 {
   try {
-    const helpOutput = execFileSync(process.execPath, [join(ROOT, 'bin/grove.js'), '-h'], {
+    const helpOutput = execFileSync(process.execPath, [join(ROOT, 'bin/barn.js'), '-h'], {
       timeout: 5000,
       stdio: ['ignore', 'pipe', 'pipe'],
     }).toString();
-    assert(helpOutput.includes('detect-sprints'), 'grove -h shows detect-sprints');
+    assert(helpOutput.includes('detect-sprints'), 'barn -h shows detect-sprints');
   } catch (e) {
-    assert(false, `grove -h runs: ${e.message}`);
+    assert(false, `barn -h runs: ${e.message}`);
   }
 }
 

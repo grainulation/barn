@@ -1,11 +1,11 @@
 {
-  "name": "@grainulator/grove",
+  "name": "@grainulator/barn",
   "version": "0.1.0",
   "description": "Public tools for the grainulator ecosystem",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "grove": "./bin/grove.js"
+    "barn": "./bin/barn.js"
   },
   "exports": {
     "./detect-sprints": "./tools/detect-sprints.js",
@@ -32,6 +32,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/aid-ninja/grove.git"
-  }
+    "url": "https://github.com/grainulator/barn.git"
+  },
+  "homepage": "https://grainulator.github.io/barn/"
 }

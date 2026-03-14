@@ -1,4 +1,4 @@
-# grove/templates
+# barn/templates
 
 Self-contained HTML templates for research sprint artifacts. No external dependencies -- all CSS is inlined, no JavaScript frameworks.
 
@@ -42,7 +42,7 @@ Sprint status dashboard. Designed to be populated from `compilation.json` data.
 Copy a template into your project and replace the `{{PLACEHOLDER}}` values:
 
 ```bash
-cp node_modules/@grainulator/grove/templates/explainer.html ./output/presentation.html
+cp node_modules/@grainulator/barn/templates/explainer.html ./output/presentation.html
 ```
 
 Both templates are mobile responsive with breakpoints at 768px and 480px.

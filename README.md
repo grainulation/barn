@@ -1,19 +1,19 @@
-# grove
+# barn
 
 Open tools for structured research. Use with wheat, or use standalone.
 
-Grove extracts the reusable utilities from the [wheat](https://github.com/aid-ninja/wheat) research sprint system into a standalone package. Zero npm dependencies -- Node built-in only.
+Barn extracts the reusable utilities from the [wheat](https://github.com/grainulator/wheat) research sprint system into a standalone package. Zero npm dependencies -- Node built-in only.
 
 ## Install
 
 ```bash
-npm install @grainulator/grove
+npm install @grainulator/barn
 ```
 
 Or use directly:
 
 ```bash
-npx @grainulator/grove detect-sprints --json
+npx @grainulator/barn detect-sprints --json
 ```
 
 ## Tools
@@ -23,10 +23,10 @@ npx @grainulator/grove detect-sprints --json
 Find sprint directories in a repo by scanning for `claims.json` files. Uses git history to determine which sprint is active.
 
 ```bash
-grove detect-sprints              # Human-readable output
-grove detect-sprints --json       # Machine-readable JSON
-grove detect-sprints --active     # Print only the active sprint path
-grove detect-sprints --root /path # Scan a specific directory
+barn detect-sprints              # Human-readable output
+barn detect-sprints --json       # Machine-readable JSON
+barn detect-sprints --active     # Print only the active sprint path
+barn detect-sprints --root /path # Scan a specific directory
 ```
 
 ### generate-manifest
@@ -34,9 +34,9 @@ grove detect-sprints --root /path # Scan a specific directory
 Build a `wheat-manifest.json` topic map from claims, files, and git history. Gives AI tools (and humans) a single file that describes the entire sprint state.
 
 ```bash
-grove generate-manifest                        # Write wheat-manifest.json
-grove generate-manifest --root /path           # Target a specific repo
-grove generate-manifest --out custom-name.json # Custom output path
+barn generate-manifest                        # Write wheat-manifest.json
+barn generate-manifest --root /path           # Target a specific repo
+barn generate-manifest --out custom-name.json # Custom output path
 ```
 
 ### build-pdf
@@ -44,7 +44,7 @@ grove generate-manifest --out custom-name.json # Custom output path
 Convert markdown to PDF via `md-to-pdf` (invoked through npx -- no local install needed).
 
 ```bash
-grove build-pdf output/brief.md
+barn build-pdf output/brief.md
 ```
 
 ## Templates
@@ -57,7 +57,7 @@ HTML templates for sprint artifacts. Self-contained (inline CSS/JS, no external 
 Copy templates into your project:
 
 ```bash
-cp node_modules/@grainulator/grove/templates/explainer.html ./output/
+cp node_modules/@grainulator/barn/templates/explainer.html ./output/
 ```
 
 ## Philosophy

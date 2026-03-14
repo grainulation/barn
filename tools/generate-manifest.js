@@ -6,9 +6,9 @@
  * to produce a topic-map manifest. Zero npm dependencies.
  *
  * Usage:
- *   grove generate-manifest                        # Write wheat-manifest.json
- *   grove generate-manifest --root /path            # Target a specific repo
- *   grove generate-manifest --out custom-name.json  # Custom output path
+ *   barn generate-manifest                        # Write wheat-manifest.json
+ *   barn generate-manifest --root /path            # Target a specific repo
+ *   barn generate-manifest --out custom-name.json  # Custom output path
  */
 
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
@@ -88,9 +88,9 @@ if (args.includes('--help') || args.includes('-h')) {
   console.log(`generate-manifest — build wheat-manifest.json topic map
 
 Usage:
-  grove generate-manifest                         Write wheat-manifest.json
-  grove generate-manifest --root /path             Target a specific repo
-  grove generate-manifest --out custom-name.json   Custom output path
+  barn generate-manifest                         Write wheat-manifest.json
+  barn generate-manifest --root /path             Target a specific repo
+  barn generate-manifest --out custom-name.json   Custom output path
 
 Reads claims.json and scans the repo to produce a topic map manifest
 that gives AI tools a single file describing the sprint state.`);
@@ -197,7 +197,7 @@ for (const [path, info] of Object.entries(allFiles)) {
 
 const manifest = {
   generated: new Date().toISOString(),
-  generator: '@grainulator/grove generate-manifest',
+  generator: '@grainulator/barn generate-manifest',
   claims_hash: compilation?.claims_hash || null,
   topics: topicMap,
   sprints,

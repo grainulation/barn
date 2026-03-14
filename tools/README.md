@@ -1,4 +1,4 @@
-# grove/tools
+# barn/tools
 
 Standalone utilities for structured research sprints. Each tool works independently and has zero npm dependencies.
 
@@ -13,7 +13,7 @@ Scans a repo for `claims.json` files and determines which sprint is active using
 
 **Programmatic use:**
 ```js
-import { detectSprints } from '@grainulator/grove/detect-sprints';
+import { detectSprints } from '@grainulator/barn/detect-sprints';
 const { active, sprints } = detectSprints('/path/to/repo');
 ```
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * grove — CLI for grainulator/grove tools
+ * barn — CLI for grainulator/barn tools
  *
  * Usage:
- *   grove <command> [options]
+ *   barn <command> [options]
  *
  * Commands:
  *   detect-sprints    Find sprint directories in a repo
@@ -31,10 +31,10 @@ const args = process.argv.slice(2);
 const command = args[0];
 
 if (!command || command === 'help' || command === '--help' || command === '-h') {
-  console.log(`grove — open tools for structured research
+  console.log(`barn — open tools for structured research
 
 Usage:
-  grove <command> [options]
+  barn <command> [options]
 
 Commands:
   detect-sprints      Find sprint directories in a repo
@@ -43,19 +43,19 @@ Commands:
   help                Show this help message
 
 Examples:
-  grove detect-sprints --json
-  grove detect-sprints --active
-  grove generate-manifest --root /path/to/repo
-  grove build-pdf output/brief.md
+  barn detect-sprints --json
+  barn detect-sprints --active
+  barn generate-manifest --root /path/to/repo
+  barn build-pdf output/brief.md
 
 Zero npm dependencies. Node built-in only.
-https://github.com/aid-ninja/grove`);
+https://github.com/grainulator/barn`);
   process.exit(0);
 }
 
 if (!commands[command]) {
   console.error(`Unknown command: ${command}`);
-  console.error(`Run "grove help" for available commands.`);
+  console.error(`Run "barn help" for available commands.`);
   process.exit(1);
 }
 
