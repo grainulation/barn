@@ -118,6 +118,175 @@ assert(site.includes('detect-sprints'), 'site documents detect-sprints');
 assert(site.includes('generate-manifest'), 'site documents generate-manifest');
 assert(site.includes('build-pdf'), 'site documents build-pdf');
 
+// ─── detect-sprints: functional tests ────────────────────────────────────────
+
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { detectSprints } from '../tools/detect-sprints.js';
+
+console.log('\n--- detect-sprints: functional ---');
+
+// detectSprints finds root claims.json
+{
+  const tmp = mkdtempSync(join(tmpdir(), 'grove-ds-'));
+  writeFileSync(join(tmp, 'claims.json'), JSON.stringify({
+    meta: { phase: 'active', question: 'Test question?', initiated: '2026-01-01' },
+    claims: [
+      { id: 'r001', type: 'factual', text: 'test', status: 'active', topic: 'test' },
+    ],
+  }));
+  const result = detectSprints(tmp);
+  assert(result.sprints.length >= 1, 'detectSprints finds root sprint');
+  assert(result.sprints[0].claims_count === 1, 'detectSprints counts claims');
+  assert(result.sprints[0].active_claims === 1, 'detectSprints counts active claims');
+  assert(result.sprints[0].phase === 'active', 'detectSprints reads phase');
+  rmSync(tmp, { recursive: true });
+}
+
+// detectSprints finds sprints in examples/ subdirs
+{
+  const tmp = mkdtempSync(join(tmpdir(), 'grove-ds-'));
+  mkdirSync(join(tmp, 'examples', 'sprint-a'), { recursive: true });
+  writeFileSync(join(tmp, 'examples', 'sprint-a', 'claims.json'), JSON.stringify({
+    meta: { phase: 'archived', question: 'Old sprint' },
+    claims: [{ id: 'r001', type: 'factual', text: 'old', status: 'active', topic: 'old' }],
+  }));
+  const result = detectSprints(tmp);
+  assert(result.sprints.length >= 1, 'detectSprints finds example sprints');
+  const exSprint = result.sprints.find(s => s.name === 'sprint-a');
+  assert(exSprint, 'detectSprints names example sprint from directory');
+  assert(exSprint.status === 'archived', 'archived sprints get archived status');
+  rmSync(tmp, { recursive: true });
+}
+
+// detectSprints marks the best candidate as active
+{
+  const tmp = mkdtempSync(join(tmpdir(), 'grove-ds-'));
+  writeFileSync(join(tmp, 'claims.json'), JSON.stringify({
+    meta: { phase: 'research', question: 'Current sprint', initiated: '2026-03-01' },
+    claims: [
+      { id: 'r001', type: 'factual', text: 'test', status: 'active', topic: 'test' },
+    ],
+  }));
+  const result = detectSprints(tmp);
+  assert(result.active !== null, 'detectSprints identifies active sprint');
+  assert(result.active.status === 'active', 'active sprint has active status');
+  rmSync(tmp, { recursive: true });
+}
+
+// detectSprints returns empty for dir with no claims.json
+{
+  const tmp = mkdtempSync(join(tmpdir(), 'grove-ds-'));
+  const result = detectSprints(tmp);
+  assert(result.sprints.length === 0, 'detectSprints returns empty for no claims');
+  assert(result.active === null, 'detectSprints active is null when no sprints');
+  rmSync(tmp, { recursive: true });
+}
+
+// ─── generate-manifest: --help check ─────────────────────────────────────────
+
+console.log('\n--- generate-manifest ---');
+
+// Note: generate-manifest imports detect-sprints which has top-level CLI code,
+// so --help is intercepted by detect-sprints. We verify it runs without error.
+try {
+  const gmHelp = execFileSync(process.execPath, [join(ROOT, 'tools/generate-manifest.js'), '--help'], {
+    timeout: 5000,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).toString();
+  assert(gmHelp.includes('--root'), 'generate-manifest help mentions --root');
+} catch (e) {
+  assert(false, `generate-manifest --help runs: ${e.message}`);
+}
+
+// ─── generate-manifest: functional with real claims ──────────────────────────
+
+{
+  const tmp = mkdtempSync(join(tmpdir(), 'grove-gm-'));
+  writeFileSync(join(tmp, 'claims.json'), JSON.stringify({
+    meta: { phase: 'active', question: 'Manifest test' },
+    claims: [
+      { id: 'r001', type: 'factual', text: 'test claim', status: 'active', topic: 'infra', evidence: 'documented', tags: ['node'] },
+    ],
+  }));
+  try {
+    execFileSync(process.execPath, [join(ROOT, 'tools/generate-manifest.js'), '--root', tmp], {
+      timeout: 10000,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    const manifest = JSON.parse(readFileSync(join(tmp, 'wheat-manifest.json'), 'utf8'));
+    assert(manifest.generator === '@grainulator/grove generate-manifest', 'manifest has correct generator');
+    assert(manifest.topics && typeof manifest.topics === 'object', 'manifest has topics object');
+    assert(manifest.topics['infra'], 'manifest has the infra topic from claims');
+    assert(manifest.topics['infra'].claims.includes('r001'), 'manifest topic contains claim r001');
+    assert(typeof manifest.generated === 'string', 'manifest has generated timestamp');
+    assert(typeof manifest.sprints === 'object', 'manifest has sprints object');
+    assert(typeof manifest.files === 'object', 'manifest has files object');
+  } catch (e) {
+    assert(false, `generate-manifest runs on test claims: ${e.message}`);
+  }
+  rmSync(tmp, { recursive: true });
+}
+
+// ─── build-pdf: --help check ────────────────────────────────────────────────
+
+console.log('\n--- build-pdf ---');
+
+try {
+  const bpHelp = execFileSync(process.execPath, [join(ROOT, 'tools/build-pdf.js'), '--help'], {
+    timeout: 5000,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).toString();
+  assert(bpHelp.includes('build-pdf'), 'build-pdf help mentions itself');
+  assert(bpHelp.includes('markdown'), 'build-pdf help mentions markdown');
+  assert(bpHelp.includes('md-to-pdf'), 'build-pdf help mentions md-to-pdf');
+} catch (e) {
+  assert(false, `build-pdf --help runs: ${e.message}`);
+}
+
+// build-pdf exits with 1 for nonexistent file
+{
+  try {
+    execFileSync(process.execPath, [join(ROOT, 'tools/build-pdf.js'), '/nonexistent/file.md'], {
+      timeout: 5000,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    assert(false, 'build-pdf should fail for nonexistent file');
+  } catch (e) {
+    assert(e.status === 1, 'build-pdf exits 1 for missing file');
+  }
+}
+
+// ─── CLI version/help checks ─────────────────────────────────────────────────
+
+console.log('\n--- CLI edge cases ---');
+
+// grove unknown command exits with error
+{
+  try {
+    execFileSync(process.execPath, [join(ROOT, 'bin/grove.js'), 'nonexistent-cmd'], {
+      timeout: 5000,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    assert(false, 'grove should exit with error on unknown command');
+  } catch (e) {
+    assert(e.status === 1, 'grove exits 1 for unknown command');
+  }
+}
+
+// grove -h also shows help
+{
+  try {
+    const helpOutput = execFileSync(process.execPath, [join(ROOT, 'bin/grove.js'), '-h'], {
+      timeout: 5000,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    }).toString();
+    assert(helpOutput.includes('detect-sprints'), 'grove -h shows detect-sprints');
+  } catch (e) {
+    assert(false, `grove -h runs: ${e.message}`);
+  }
+}
+
 // ─── Summary ─────────────────────────────────────────────────────────────────
 
 console.log(`\n${passed + failed} tests: ${passed} passed, ${failed} failed\n`);
