@@ -112,7 +112,7 @@ try {
 console.log('\n--- Site ---');
 
 const site = readFileSync(join(ROOT, 'site/index.html'), 'utf8');
-assert(site.includes('#92622a'), 'site uses barn brown accent');
+assert(site.includes('#ef4444'), 'site uses barn brown accent');
 assert(site.includes('@grainulator/barn'), 'site mentions package name');
 assert(site.includes('detect-sprints'), 'site documents detect-sprints');
 assert(site.includes('generate-manifest'), 'site documents generate-manifest');
