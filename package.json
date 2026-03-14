@@ -30,6 +30,7 @@
     "sprints",
     "structured-research"
   ],
+  "author": "grainulator contributors",
   "repository": {
     "type": "git",
     "url": "https://github.com/grainulator/barn.git"
