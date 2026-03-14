@@ -1,0 +1,37 @@
+{
+  "name": "@grainulator/grove",
+  "version": "0.1.0",
+  "description": "Public tools for the grainulator ecosystem",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "grove": "./bin/grove.js"
+  },
+  "exports": {
+    "./detect-sprints": "./tools/detect-sprints.js",
+    "./generate-manifest": "./tools/generate-manifest.js",
+    "./build-pdf": "./tools/build-pdf.js"
+  },
+  "files": [
+    "bin/",
+    "tools/",
+    "templates/"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node test/basic.test.js"
+  },
+  "keywords": [
+    "wheat",
+    "grainulator",
+    "research",
+    "sprints",
+    "structured-research"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aid-ninja/grove.git"
+  }
+}
