@@ -31,9 +31,9 @@
 <div class="bg-ambient" aria-hidden="true"><div class="orb"></div><div class="orb"></div></div>
 <div class="page">
 <nav aria-label="Main navigation"><div class="container"><a href="#" class="nav-logo"><span>g</span> grove</a><div class="nav-links"><a href="#what">About</a><a href="#quickstart">Quick Start</a><a href="#features">Features</a><a href="https://github.com/grainulator/grove" class="nav-cta">GitHub</a></div></div></nav><main id="main">
-<section class="hero"><div class="container"><div class="hero-badge hf hf1">Part of the grainulator ecosystem</div><h1 class="hf hf2">Sprint utilities scattered<br>across repos?<br><em>Grove collects them.</em></h1><p class="hero-sub hf hf3">Grove is the shared utility layer for the grainulator ecosystem. Sprint detection, manifest generation, HTML templates, and PDF building -- all in one package that every other tool depends on.</p><div class="hero-actions hf hf4"><a href="#quickstart" class="btn btn-primary"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg> Get started</a><a href="#example" class="btn btn-ghost">See it in action</a></div></div></section>
+<section class="hero"><div class="container"><div class="hero-badge hf hf1">Shared tooling for advanced users</div><h1 class="hf hf2">Grove powers the<br>shared tooling behind<br><em>grainulator.</em></h1><p class="hero-sub hf hf3">Most users never interact with grove directly -- wheat and other grainulator tools use it automatically. This page is for developers who want to use grove's utilities standalone or build on top of them.</p><div class="hero-actions hf hf4"><a href="#quickstart" class="btn btn-primary"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg> Get started</a><a href="#example" class="btn btn-ghost">See it in action</a></div></div></section>
 <hr class="sep">
-<section class="what-is" id="what"><div class="container"><div class="what-box rv"><h2>What is grove?</h2><p>Grainulator is an ecosystem of tools for structured research. Grove is the shared foundation -- it provides the utilities that every other tool needs. It can scan a repo to find research sprints, generate compact manifest files so AI agents do not need to scan everything themselves, and provides HTML templates for reports. If you are using wheat (the core research engine), grove is already working behind the scenes.</p></div></div></section>
+<section class="what-is" id="what"><div class="container"><div class="what-box rv"><h2>What is grove?</h2><p>If you are using wheat, grove is already working for you. It handles sprint detection, manifest generation, HTML templates, and PDF building behind the scenes. This page is for developers who want to use grove's tools directly or build on top of them -- for example, creating custom integrations or extending grainulator with new packages.</p></div></div></section>
 <hr class="sep">
 <section class="quickstart" id="quickstart"><div class="container"><div class="qs-label rv">Quick start -- 3 commands</code></pre><div class="qs-steps"><div class="qs-step rv rv-d1"><div class="qs-num">1</div><h3>Detect sprints</h3><p>Scan any repo for research sprints by finding claims.json files and reading git history.</p><div class="copy-wrap"><pre class="qs-code"><code><span class="dim">$</span> npx @grainulator/grove detect-sprints</div><button class="copy-btn" onclick="copyText(this,'npx @grainulator/grove detect-sprints')">Copy</button></div><div class="qs-output">Found 3 sprints:
   sprints/graphql-migration (active, 14 claims)
@@ -42,7 +42,7 @@
   Topics: 6  Claims: 14  Files: 8</code></pre></div><div class="qs-step rv rv-d3"><div class="qs-num">3</div><h3>Build PDF</h3><p>Convert markdown research output to a styled PDF document.</p><div class="copy-wrap"><pre class="qs-code"><code><span class="dim">$</span> npx @grainulator/grove build-pdf brief.md</div><button class="copy-btn" onclick="copyText(this,'npx @grainulator/grove build-pdf brief.md')">Copy</button></div><div class="qs-output">Written: brief.pdf (142KB, 4 pages)</div></div></div></div></section>
 <hr class="sep">
 <section class="example" id="example"><div class="container"><div class="section-label rv">Real example</div><h2 class="section-title rv rv-d1">A mono-repo with 3 research sprints</h2><p class="section-sub rv rv-d2">Your team has been running wheat sprints for a few weeks. A new developer joins and needs to understand where things stand. Grove gives them a map in seconds.</p><div class="term-block rv rv-d3">
-<span class="prompt">$</span> <span class="cmd">grove detect-sprints --json</span>
+<span class="prompt">$</span> <span class="cmd">npx @grainulator/grove detect-sprints --json</span>
 
 <span class="output">{
   "sprints": [
@@ -53,7 +53,7 @@
   "active_sprint": "sprints/graphql-migration"
 }</span>
 
-<span class="prompt">$</span> <span class="cmd">grove generate-manifest --root sprints/graphql-migration</span>
+<span class="prompt">$</span> <span class="cmd">npx @grainulator/grove generate-manifest --root sprints/graphql-migration</span>
 
 <span class="success">Manifest written to wheat-manifest.json (4.2KB)</span>
 <span class="output">  Topics: <span class="num">6</span>  Claims: <span class="num">14</span>  Files: <span class="num">8</span>
