@@ -229,60 +229,62 @@ export function detectSprints(rootDir) {
 
 // ─── CLI ─────────────────────────────────────────────────────────────────────
 
-if (args.includes('--help') || args.includes('-h')) {
-  console.log(`detect-sprints — git-based sprint detection (no config required)
+if (process.argv[1] === __filename) {
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log(`detect-sprints — git-based sprint detection (no config required)
 
 Usage:
-  grove detect-sprints              Human-readable sprint list
-  grove detect-sprints --json       Machine-readable JSON output
-  grove detect-sprints --active     Print only the active sprint path
-  grove detect-sprints --root PATH  Scan a specific directory
+  barn detect-sprints              Human-readable sprint list
+  barn detect-sprints --json       Machine-readable JSON output
+  barn detect-sprints --active     Print only the active sprint path
+  barn detect-sprints --root PATH  Scan a specific directory
 
 Detects sprints from claims.json files in a repo. Determines the active
 sprint using git commit history and metadata — no config pointer needed.`);
-  process.exit(0);
-}
-
-const t0 = performance.now();
-const result = detectSprints();
-const elapsed = (performance.now() - t0).toFixed(1);
-
-if (args.includes('--json')) {
-  console.log(JSON.stringify(result, null, 2));
-  process.exit(0);
-}
-
-if (args.includes('--active')) {
-  if (result.active) {
-    console.log(result.active.path);
-  } else {
-    console.error('No active sprint detected.');
-    process.exit(1);
+    process.exit(0);
   }
-  process.exit(0);
-}
 
-// Human-readable output
-console.log(`Sprint Detection (${elapsed}ms)`);
-console.log('='.repeat(50));
-console.log(`Found ${result.sprints.length} sprint(s)\n`);
+  const t0 = performance.now();
+  const result = detectSprints();
+  const elapsed = (performance.now() - t0).toFixed(1);
 
-for (const sprint of result.sprints) {
-  const icon = sprint.status === 'active' ? '>>>' : '   ';
-  const statusTag = sprint.status.toUpperCase().padEnd(8);
-  console.log(`${icon} [${statusTag}] ${sprint.name}`);
-  console.log(`    Path:     ${sprint.path}`);
-  console.log(`    Phase:    ${sprint.phase}`);
-  console.log(`    Claims:   ${sprint.claims_count} total, ${sprint.active_claims} active`);
-  console.log(`    Initiated: ${sprint.initiated || 'unknown'}`);
-  console.log(`    Last git:  ${sprint.last_git_activity || 'untracked'}`);
-  console.log(`    Commits:   ${sprint.git_commit_count}`);
-  console.log(`    Question:  ${sprint.question.slice(0, 80)}${sprint.question.length > 80 ? '...' : ''}`);
-  console.log();
-}
+  if (args.includes('--json')) {
+    console.log(JSON.stringify(result, null, 2));
+    process.exit(0);
+  }
 
-if (result.active) {
-  console.log(`Active sprint: ${result.active.path} (${result.active.name})`);
-} else {
-  console.log('No active sprint detected.');
+  if (args.includes('--active')) {
+    if (result.active) {
+      console.log(result.active.path);
+    } else {
+      console.error('No active sprint detected.');
+      process.exit(1);
+    }
+    process.exit(0);
+  }
+
+  // Human-readable output
+  console.log(`Sprint Detection (${elapsed}ms)`);
+  console.log('='.repeat(50));
+  console.log(`Found ${result.sprints.length} sprint(s)\n`);
+
+  for (const sprint of result.sprints) {
+    const icon = sprint.status === 'active' ? '>>>' : '   ';
+    const statusTag = sprint.status.toUpperCase().padEnd(8);
+    console.log(`${icon} [${statusTag}] ${sprint.name}`);
+    console.log(`    Path:     ${sprint.path}`);
+    console.log(`    Phase:    ${sprint.phase}`);
+    console.log(`    Claims:   ${sprint.claims_count} total, ${sprint.active_claims} active`);
+    console.log(`    Initiated: ${sprint.initiated || 'unknown'}`);
+    console.log(`    Last git:  ${sprint.last_git_activity || 'untracked'}`);
+    console.log(`    Commits:   ${sprint.git_commit_count}`);
+    console.log(`    Question:  ${sprint.question.slice(0, 80)}${sprint.question.length > 80 ? '...' : ''}`);
+    console.log();
+  }
+
+  if (result.active) {
+    console.log(`Active sprint: ${result.active.path} (${result.active.name})`);
+  } else {
+    console.log('No active sprint detected.');
+  }
 }
