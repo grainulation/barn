@@ -327,10 +327,44 @@
   }
   .conn-dot.disconnected { background: var(--accent); }
 
+  /* ── Mobile nav ── */
+  .mobile-nav {
+    display: none;
+    grid-column: 1 / -1;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-nav-bar {
+    display: flex;
+  }
+  .mobile-tab {
+    flex: 1;
+    padding: 8px 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dim);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .mobile-tab:hover { color: var(--muted); }
+  .mobile-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
   /* ── Responsive ── */
   @media (max-width: 768px) {
-    .app { grid-template-columns: 1fr; }
-    .sidebar { display: none; }
+    .app {
+      grid-template-columns: 1fr;
+      grid-template-rows: 48px auto 1fr;
+    }
+    .mobile-nav { display: block; grid-row: 2; }
+    .sidebar { grid-row: 3; display: none; }
+    .main { grid-row: 3; }
+    .sidebar.mobile-visible { display: block; }
+    .main.mobile-hidden { display: none; }
+    .toolbar .toolbar-sprint { display: none; }
   }
 </style>
 </head>
@@ -344,6 +378,14 @@
     <span id="templateCount" class="toolbar-count"></span>
     <button class="toolbar-refresh" onclick="refresh()">refresh</button>
     <span class="conn-dot" id="connDot"></span>
+  </div>
+
+  <!-- Mobile nav -->
+  <div class="mobile-nav">
+    <div class="mobile-nav-bar">
+      <button class="mobile-tab active" data-panel="preview" onclick="switchMobilePanel('preview')">Preview</button>
+      <button class="mobile-tab" data-panel="templates" onclick="switchMobilePanel('templates')">Templates</button>
+    </div>
   </div>
 
   <!-- Sidebar: template list + sprints -->
@@ -552,6 +594,23 @@ function switchTab(tab) {
   const tabs = document.querySelectorAll('.preview-tab');
   tabs.forEach(t => t.classList.toggle('active', t.textContent.toLowerCase() === tab));
   loadTabContent();
+}
+
+// ── Mobile panel switching ──
+function switchMobilePanel(panel) {
+  const sidebar = document.getElementById('sidebar');
+  const main = document.getElementById('main');
+  const tabs = document.querySelectorAll('.mobile-tab');
+
+  sidebar.classList.remove('mobile-visible');
+  main.classList.remove('mobile-hidden');
+
+  tabs.forEach(t => t.classList.toggle('active', t.dataset.panel === panel));
+
+  if (panel === 'templates') {
+    sidebar.classList.add('mobile-visible');
+    main.classList.add('mobile-hidden');
+  }
 }
 
 // ── Init ──
