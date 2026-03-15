@@ -196,6 +196,7 @@ for (const [path, info] of Object.entries(allFiles)) {
 }
 
 const manifest = {
+  schema_version: '1.0',
   generated: new Date().toISOString(),
   generator: '@grainulation/barn generate-manifest',
   claims_hash: compilation?.claims_hash || null,
