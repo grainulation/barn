@@ -10,10 +10,13 @@
   "exports": {
     "./detect-sprints": "./tools/detect-sprints.js",
     "./generate-manifest": "./tools/generate-manifest.js",
-    "./build-pdf": "./tools/build-pdf.js"
+    "./build-pdf": "./tools/build-pdf.js",
+    "./server": "./lib/server.js"
   },
   "files": [
     "bin/",
+    "lib/",
+    "public/",
     "tools/",
     "templates/"
   ],

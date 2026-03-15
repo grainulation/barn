@@ -21,6 +21,8 @@ import { fork } from 'node:child_process';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TOOLS_DIR = join(__dirname, '..', 'tools');
 
+const LIB_DIR = join(__dirname, '..', 'lib');
+
 const commands = {
   'detect-sprints': 'detect-sprints.js',
   'generate-manifest': 'generate-manifest.js',
@@ -37,12 +39,14 @@ Usage:
   barn <command> [options]
 
 Commands:
+  serve               Start the template browser UI
   detect-sprints      Find sprint directories in a repo
   generate-manifest   Build wheat-manifest.json topic map
   build-pdf <file>    Convert markdown to PDF via npx md-to-pdf
   help                Show this help message
 
 Examples:
+  barn serve --port 9093 --root /path/to/repo
   barn detect-sprints --json
   barn detect-sprints --active
   barn generate-manifest --root /path/to/repo
@@ -53,15 +57,17 @@ https://github.com/grainulation/barn`);
   process.exit(0);
 }
 
-if (!commands[command]) {
+// ── serve command (lib/server.js) ──
+if (command === 'serve') {
+  const serverPath = join(LIB_DIR, 'server.js');
+  const child = fork(serverPath, args.slice(1), { stdio: 'inherit' });
+  child.on('exit', (code) => process.exit(code ?? 0));
+} else if (commands[command]) {
+  const toolPath = join(TOOLS_DIR, commands[command]);
+  const child = fork(toolPath, args.slice(1), { stdio: 'inherit' });
+  child.on('exit', (code) => process.exit(code ?? 0));
+} else {
   console.error(`Unknown command: ${command}`);
   console.error(`Run "barn help" for available commands.`);
   process.exit(1);
 }
-
-const toolPath = join(TOOLS_DIR, commands[command]);
-const toolArgs = args.slice(1);
-
-// Fork the tool script, passing remaining args
-const child = fork(toolPath, toolArgs, { stdio: 'inherit' });
-child.on('exit', (code) => process.exit(code ?? 0));

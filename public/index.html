@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>barn</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1e293b;
+    --border: rgba(255,255,255,0.08);
+    --accent: #ef4444;
+    --accent-light: #f87171;
+    --accent-dim: rgba(239,68,68,0.12);
+    --text: #e8ecf1;
+    --muted: #94a3b8;
+    --dim: #64748b;
+    --green: #22c55e;
+    --orange: #f59e0b;
+    --purple: #a78bfa;
+    --blue: #3b82f6;
+    --blue-light: #60a5fa;
+    --radius: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Layout: two columns ── */
+  .app {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: 48px 1fr;
+    height: 100vh;
+  }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    grid-column: 1 / -1;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 16px;
+  }
+  .toolbar-brand {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .toolbar-sprint {
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--bg3);
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .toolbar-sprint .phase {
+    color: var(--blue-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    margin-right: 6px;
+  }
+  .toolbar-count {
+    font-size: 11px;
+    color: var(--dim);
+    margin-left: auto;
+  }
+  .toolbar-refresh {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .toolbar-refresh:hover { color: var(--text); border-color: var(--muted); }
+
+  /* ── Sidebar (template list) ── */
+  .sidebar {
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 12px;
+  }
+
+  .sidebar-header {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    padding: 8px 8px 6px;
+  }
+
+  .template-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .template-card:hover { border-color: var(--accent-dim); background: rgba(239,68,68,0.04); }
+  .template-card.active { border-color: var(--accent); background: rgba(239,68,68,0.06); }
+  .template-card .name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .template-card .desc {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .template-card .meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .template-card .tag {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--bg2);
+    color: var(--dim);
+    border: 1px solid var(--border);
+  }
+  .template-card .tag.feature { color: var(--blue-light); background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.15); }
+
+  /* ── Sprint section ── */
+  .sprint-section {
+    margin-top: 8px;
+  }
+  .sprint-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 6px;
+  }
+  .sprint-card.active { border-left: 3px solid var(--green); }
+  .sprint-card .sprint-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .sprint-card .sprint-meta {
+    font-size: 9px;
+    color: var(--dim);
+    margin-top: 2px;
+    display: flex;
+    gap: 8px;
+  }
+  .sprint-card .sprint-meta .phase-tag {
+    color: var(--blue-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Main (preview) ── */
+  .main {
+    overflow-y: auto;
+    background: var(--bg);
+  }
+
+  .preview-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--dim);
+    gap: 8px;
+  }
+  .preview-empty .icon { font-size: 40px; opacity: 0.3; }
+  .preview-empty .text { font-size: 13px; }
+
+  .preview-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .preview-header .title { font-size: 15px; font-weight: 700; }
+  .preview-header .badge {
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--accent-dim);
+    color: var(--accent-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .preview-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    padding: 0 24px;
+  }
+  .preview-tab {
+    padding: 8px 16px;
+    font-size: 11px;
+    color: var(--dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    font-family: inherit;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  .preview-tab:hover { color: var(--muted); }
+  .preview-tab.active { color: var(--accent-light); border-bottom-color: var(--accent); }
+
+  .preview-content {
+    padding: 0;
+    height: calc(100vh - 48px - 56px - 36px);
+  }
+
+  /* Source view */
+  .source-view {
+    padding: 20px 24px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--muted);
+    white-space: pre-wrap;
+    overflow-y: auto;
+    height: 100%;
+    tab-size: 2;
+  }
+  .source-view .line-num {
+    display: inline-block;
+    width: 36px;
+    text-align: right;
+    color: var(--dim);
+    margin-right: 16px;
+    user-select: none;
+    opacity: 0.5;
+  }
+  .source-view .placeholder { color: var(--orange); font-weight: 600; }
+  .source-view .comment { color: var(--dim); font-style: italic; }
+  .source-view .tag { color: var(--accent-light); }
+  .source-view .attr { color: var(--purple); }
+  .source-view .str { color: var(--green); }
+
+  /* Rendered preview */
+  .render-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #fff;
+  }
+
+  /* Info panel */
+  .info-panel {
+    padding: 24px;
+    overflow-y: auto;
+    height: 100%;
+  }
+  .info-panel h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-light);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .info-row .label { color: var(--dim); }
+  .info-row .value { color: var(--text); font-weight: 500; }
+  .placeholder-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .placeholder-tag {
+    font-family: 'SF Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    background: rgba(245,158,11,0.1);
+    color: var(--orange);
+    border-radius: 4px;
+    border: 1px solid rgba(245,158,11,0.2);
+  }
+
+  /* ── Connection indicator ── */
+  .conn-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    display: inline-block;
+  }
+  .conn-dot.disconnected { background: var(--accent); }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <span class="toolbar-brand">barn</span>
+    <span id="sprintBadge" class="toolbar-sprint"></span>
+    <span id="templateCount" class="toolbar-count"></span>
+    <button class="toolbar-refresh" onclick="refresh()">refresh</button>
+    <span class="conn-dot" id="connDot"></span>
+  </div>
+
+  <!-- Sidebar: template list + sprints -->
+  <div class="sidebar" id="sidebar"></div>
+
+  <!-- Main: preview pane -->
+  <div class="main" id="main">
+    <div class="preview-empty">
+      <div class="icon">&#x1F3DA;</div>
+      <div class="text">select a template to preview</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let state = { templates: [], sprints: [], activeSprint: null, manifest: null };
+let selected = null;
+let activeTab = 'source';
+let sse = null;
+
+// ── SSE connection ──────────────────────────────────────────────────────────
+
+function connect() {
+  sse = new EventSource('/events');
+  sse.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.type === 'state') {
+        state = msg.data;
+        render();
+      }
+    } catch {}
+  };
+  sse.onopen = () => {
+    document.getElementById('connDot').classList.remove('disconnected');
+  };
+  sse.onerror = () => {
+    document.getElementById('connDot').classList.add('disconnected');
+    sse.close();
+    setTimeout(connect, 3000);
+  };
+}
+
+async function refresh() {
+  try {
+    const resp = await fetch('/api/refresh', { method: 'POST' });
+    state = await resp.json();
+    render();
+  } catch {}
+}
+
+// ── Rendering ───────────────────────────────────────────────────────────────
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function formatBytes(b) {
+  if (b < 1024) return b + ' B';
+  return (b / 1024).toFixed(1) + ' KB';
+}
+
+function render() {
+  renderToolbar();
+  renderSidebar();
+  renderMain();
+}
+
+function renderToolbar() {
+  const badge = document.getElementById('sprintBadge');
+  if (state.activeSprint) {
+    const s = state.activeSprint;
+    badge.innerHTML = `<span class="phase">${esc(s.phase)}</span>${esc(s.name || s.question || '').substring(0, 50)}`;
+  } else {
+    badge.textContent = 'no active sprint';
+  }
+  document.getElementById('templateCount').textContent = state.templates.length + ' templates';
+}
+
+function renderSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  let html = '<div class="sidebar-header">Templates</div>';
+
+  for (const t of state.templates) {
+    const isActive = selected === t.name;
+    html += `<div class="template-card ${isActive ? 'active' : ''}" onclick="selectTemplate('${esc(t.name)}')">
+      <div class="name">${esc(t.name)}</div>
+      ${t.description ? `<div class="desc">${esc(t.description)}</div>` : ''}
+      <div class="meta">
+        <span class="tag">${t.lines} lines</span>
+        <span class="tag">${formatBytes(t.size)}</span>
+        ${t.features.map(f => `<span class="tag feature">${esc(f)}</span>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  if (state.sprints.length > 0) {
+    html += '<div class="sidebar-header" style="margin-top:16px">Sprints</div>';
+    for (const s of state.sprints) {
+      const isActive = s.status === 'active';
+      html += `<div class="sprint-card ${isActive ? 'active' : ''}">
+        <div class="sprint-name">${esc(s.name || 'unnamed')}</div>
+        <div class="sprint-meta">
+          <span class="phase-tag">${esc(s.phase)}</span>
+          <span>${s.claims_count || 0} claims</span>
+        </div>
+      </div>`;
+    }
+  }
+
+  sidebar.innerHTML = html;
+}
+
+function renderMain() {
+  const main = document.getElementById('main');
+  if (!selected) {
+    main.innerHTML = `<div class="preview-empty">
+      <div class="icon">&#x1F3DA;</div>
+      <div class="text">select a template to preview</div>
+    </div>`;
+    return;
+  }
+
+  const t = state.templates.find(t => t.name === selected);
+  if (!t) return;
+
+  main.innerHTML = `
+    <div class="preview-header">
+      <span class="title">${esc(t.name)}.html</span>
+      <span class="badge">${esc(t.features[0] || 'template')}</span>
+      <span style="margin-left:auto;font-size:10px;color:var(--dim)">${t.placeholders.length} placeholders &middot; ${t.lines} lines</span>
+    </div>
+    <div class="preview-tabs">
+      <button class="preview-tab ${activeTab === 'source' ? 'active' : ''}" onclick="switchTab('source')">Source</button>
+      <button class="preview-tab ${activeTab === 'preview' ? 'active' : ''}" onclick="switchTab('preview')">Preview</button>
+      <button class="preview-tab ${activeTab === 'info' ? 'active' : ''}" onclick="switchTab('info')">Info</button>
+    </div>
+    <div class="preview-content" id="previewContent"></div>
+  `;
+
+  loadTabContent();
+}
+
+async function loadTabContent() {
+  const container = document.getElementById('previewContent');
+  if (!selected || !container) return;
+
+  if (activeTab === 'source') {
+    try {
+      const resp = await fetch('/api/template?name=' + encodeURIComponent(selected));
+      const text = await resp.text();
+      container.innerHTML = `<div class="source-view">${highlightHTML(text)}</div>`;
+    } catch {
+      container.innerHTML = '<div class="source-view">failed to load</div>';
+    }
+  } else if (activeTab === 'preview') {
+    try {
+      const resp = await fetch('/api/template?name=' + encodeURIComponent(selected));
+      let text = await resp.text();
+      // Replace placeholders with sample content
+      text = text.replace(/\{\{TITLE\}\}/g, 'Sample Title');
+      text = text.replace(/\{\{SUBTITLE\}\}/g, 'A sample subtitle for preview');
+      text = text.replace(/\{\{[A-Z_]+\}\}/g, '...');
+      const blob = new Blob([text], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      container.innerHTML = `<iframe class="render-frame" src="${url}"></iframe>`;
+    } catch {
+      container.innerHTML = '<div class="preview-empty"><div class="text">preview failed</div></div>';
+    }
+  } else if (activeTab === 'info') {
+    const t = state.templates.find(t => t.name === selected);
+    if (!t) return;
+    container.innerHTML = `<div class="info-panel">
+      <h3>Template Details</h3>
+      <div class="info-row"><span class="label">File</span><span class="value">${esc(t.file)}</span></div>
+      <div class="info-row"><span class="label">Lines</span><span class="value">${t.lines}</span></div>
+      <div class="info-row"><span class="label">Size</span><span class="value">${formatBytes(t.size)}</span></div>
+      <div class="info-row"><span class="label">Features</span><span class="value">${t.features.join(', ') || 'none'}</span></div>
+      <h3 style="margin-top:24px">Placeholders</h3>
+      <div class="placeholder-list">
+        ${t.placeholders.map(p => `<span class="placeholder-tag">${esc(p)}</span>`).join('')}
+      </div>
+      ${t.description ? `<h3 style="margin-top:24px">Description</h3><p style="font-size:12px;color:var(--muted);line-height:1.6;">${esc(t.description)}</p>` : ''}
+    </div>`;
+  }
+}
+
+function highlightHTML(text) {
+  const lines = text.split('\n');
+  return lines.map((line, i) => {
+    let highlighted = esc(line);
+    // Highlight placeholders
+    highlighted = highlighted.replace(/(\{\{[A-Z_]+\}\})/g, '<span class="placeholder">$1</span>');
+    // Highlight HTML comments
+    highlighted = highlighted.replace(/(&lt;!--.*?--&gt;)/g, '<span class="comment">$1</span>');
+    return `<span class="line-num">${i + 1}</span>${highlighted}`;
+  }).join('\n');
+}
+
+function selectTemplate(name) {
+  selected = name;
+  activeTab = 'source';
+  render();
+}
+
+function switchTab(tab) {
+  activeTab = tab;
+  const tabs = document.querySelectorAll('.preview-tab');
+  tabs.forEach(t => t.classList.toggle('active', t.textContent.toLowerCase() === tab));
+  loadTabContent();
+}
+
+// ── Init ──
+connect();
+</script>
+</body>
+</html>
