@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * barn — CLI for grainulator/barn tools
+ * barn — CLI for grainulation/barn tools
  *
  * Usage:
  *   barn <command> [options]
@@ -49,7 +49,7 @@ Examples:
   barn build-pdf output/brief.md
 
 Zero npm dependencies. Node built-in only.
-https://github.com/grainulator/barn`);
+https://github.com/grainulation/barn`);
   process.exit(0);
 }
 

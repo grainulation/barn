@@ -1,7 +1,7 @@
 {
-  "name": "@grainulator/barn",
+  "name": "@grainulation/barn",
   "version": "0.1.0",
-  "description": "Public tools for the grainulator ecosystem",
+  "description": "Public tools for the grainulation ecosystem",
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -25,15 +25,15 @@
   },
   "keywords": [
     "wheat",
-    "grainulator",
+    "grainulation",
     "research",
     "sprints",
     "structured-research"
   ],
-  "author": "grainulator contributors",
+  "author": "grainulation contributors",
   "repository": {
     "type": "git",
-    "url": "https://github.com/grainulator/barn.git"
+    "url": "https://github.com/grainulation/barn.git"
   },
-  "homepage": "https://grainulator.github.io/barn/"
+  "homepage": "https://grainulation.github.io/barn/"
 }

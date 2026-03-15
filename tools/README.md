@@ -13,7 +13,7 @@ Scans a repo for `claims.json` files and determines which sprint is active using
 
 **Programmatic use:**
 ```js
-import { detectSprints } from '@grainulator/barn/detect-sprints';
+import { detectSprints } from '@grainulation/barn/detect-sprints';
 const { active, sprints } = detectSprints('/path/to/repo');
 ```
 

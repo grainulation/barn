@@ -54,7 +54,7 @@ console.log('\n--- package.json ---');
 
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
 
-assert(pkg.name === '@grainulator/barn', 'name is @grainulator/barn');
+assert(pkg.name === '@grainulation/barn', 'name is @grainulation/barn');
 assert(pkg.type === 'module', 'type is module (ESM)');
 assert(pkg.license === 'MIT', 'license is MIT');
 assert(pkg.bin?.barn === './bin/barn.js', 'bin points to barn.js');
@@ -113,7 +113,7 @@ console.log('\n--- Site ---');
 
 const site = readFileSync(join(ROOT, 'site/index.html'), 'utf8');
 assert(site.includes('#ef4444'), 'site uses barn brown accent');
-assert(site.includes('@grainulator/barn'), 'site mentions package name');
+assert(site.includes('@grainulation/barn'), 'site mentions package name');
 assert(site.includes('detect-sprints'), 'site documents detect-sprints');
 assert(site.includes('generate-manifest'), 'site documents generate-manifest');
 assert(site.includes('build-pdf'), 'site documents build-pdf');
@@ -215,7 +215,7 @@ try {
       stdio: ['ignore', 'pipe', 'pipe'],
     });
     const manifest = JSON.parse(readFileSync(join(tmp, 'wheat-manifest.json'), 'utf8'));
-    assert(manifest.generator === '@grainulator/barn generate-manifest', 'manifest has correct generator');
+    assert(manifest.generator === '@grainulation/barn generate-manifest', 'manifest has correct generator');
     assert(manifest.topics && typeof manifest.topics === 'object', 'manifest has topics object');
     assert(manifest.topics['infra'], 'manifest has the infra topic from claims');
     assert(manifest.topics['infra'].claims.includes('r001'), 'manifest topic contains claim r001');

@@ -2,18 +2,18 @@
 
 Open tools for structured research. Use with wheat, or use standalone.
 
-Barn extracts the reusable utilities from the [wheat](https://github.com/grainulator/wheat) research sprint system into a standalone package. Zero npm dependencies -- Node built-in only.
+Barn extracts the reusable utilities from the [wheat](https://github.com/grainulation/wheat) research sprint system into a standalone package. Zero npm dependencies -- Node built-in only.
 
 ## Install
 
 ```bash
-npm install @grainulator/barn
+npm install @grainulation/barn
 ```
 
 Or use directly:
 
 ```bash
-npx @grainulator/barn detect-sprints --json
+npx @grainulation/barn detect-sprints --json
 ```
 
 ## Tools
@@ -57,7 +57,7 @@ HTML templates for sprint artifacts. Self-contained (inline CSS/JS, no external 
 Copy templates into your project:
 
 ```bash
-cp node_modules/@grainulator/barn/templates/explainer.html ./output/
+cp node_modules/@grainulation/barn/templates/explainer.html ./output/
 ```
 
 ## Philosophy

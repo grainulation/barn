@@ -197,7 +197,7 @@ for (const [path, info] of Object.entries(allFiles)) {
 
 const manifest = {
   generated: new Date().toISOString(),
-  generator: '@grainulator/barn generate-manifest',
+  generator: '@grainulation/barn generate-manifest',
   claims_hash: compilation?.claims_hash || null,
   topics: topicMap,
   sprints,
