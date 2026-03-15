@@ -134,14 +134,16 @@ The grainulation dark design system uses these tokens. Verify each meets the 4.5
 
 | Token            | Typical value | Background   | Contrast ratio | Passes? |
 |------------------|---------------|--------------|----------------|---------|
-| `--text-primary` | `#e0e0e0`     | `#1a1a2e`    | 10.5:1         | Yes     |
-| `--text-secondary`| `#a0a0a0`    | `#1a1a2e`    | 6.0:1          | Yes     |
-| `--text-muted`   | `#707070`     | `#1a1a2e`    | 3.5:1          | No*     |
-| `--accent-wheat` | `#f0c040`     | `#1a1a2e`    | 8.2:1          | Yes     |
-| `--accent-barn`  | `#4ecdc4`     | `#1a1a2e`    | 7.8:1          | Yes     |
-| `--accent-farmer`| `#ff6b6b`     | `#1a1a2e`    | 4.7:1          | Yes     |
+| `--text-primary` | `#e2e8f0`     | `#0a0e1a`    | 14.53:1        | Yes     |
+| `--text-secondary`| `#94a3b8`    | `#0a0e1a`    | 6.98:1         | Yes     |
+| `--text-muted`   | `#64748b`     | `#0a0e1a`    | 3.76:1         | No*     |
+| `--accent-wheat` | `#fbbf24`     | `#0a0e1a`    | 10.74:1        | Yes     |
+| `--accent-barn`  | `#e11d48`     | `#0a0e1a`    | 3.97:1         | No**    |
+| `--accent-farmer`| `#22c55e`     | `#0a0e1a`    | 7.87:1         | Yes     |
 
-*`--text-muted` at 3.5:1 fails AA for normal text. Options: lighten to `#808080` (4.5:1) or restrict use to large text / decorative elements only.
+*`--text-muted` at 3.76:1 fails AA for normal text. Options: lighten to meet 4.5:1 or restrict use to large text / decorative elements only.
+
+**`--accent-barn` at 3.97:1 fails AA for normal text. Use only for large text, icons, or decorative elements — or pair with a lighter text label for body copy.
 
 ### Rules
 

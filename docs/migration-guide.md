@@ -111,8 +111,7 @@ Every tool that reads grainulation data formats must include a `migrate.js` (or 
  *   node migrate.js claims.json --backup   # create claims.json.bak first
  */
 
-const fs = require('fs');
-const path = require('path');
+import { readFileSync, writeFileSync } from 'fs';
 
 const CURRENT_VERSION = '1.0';
 
@@ -156,8 +155,10 @@ function migrate(data, targetVersion) {
   return result;
 }
 
+export { migrate, detectVersion, CURRENT_VERSION };
+
 // CLI entry point
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const file = process.argv[2];
   if (!file) {
     console.error('Usage: node migrate.js <file> [--dry-run] [--backup]');
@@ -167,7 +168,7 @@ if (require.main === module) {
   const dryRun = process.argv.includes('--dry-run');
   const backup = process.argv.includes('--backup');
 
-  const raw = fs.readFileSync(file, 'utf8');
+  const raw = readFileSync(file, 'utf8');
   const data = JSON.parse(raw);
   const fromVersion = detectVersion(data);
 
@@ -184,15 +185,13 @@ if (require.main === module) {
     console.log(JSON.stringify(migrated, null, 2));
   } else {
     if (backup) {
-      fs.writeFileSync(file + '.bak', raw);
+      writeFileSync(file + '.bak', raw);
       console.log(`Backup written to ${file}.bak`);
     }
-    fs.writeFileSync(file, JSON.stringify(migrated, null, 2) + '\n');
+    writeFileSync(file, JSON.stringify(migrated, null, 2) + '\n');
     console.log(`Migration complete: ${file}`);
   }
 }
-
-module.exports = { migrate, detectVersion, CURRENT_VERSION };
 ```
 
 ### Rules for migration scripts
