@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="auto">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,12 +74,12 @@
     text-transform: uppercase;
     font-size: 9px;
     letter-spacing: 0.06em;
-    margin-right: 6px;
+    margin-inline-end: 6px;
   }
   .toolbar-count {
     font-size: 11px;
     color: var(--dim);
-    margin-left: auto;
+    margin-inline-start: auto;
   }
   .toolbar-refresh {
     background: none;
@@ -96,7 +96,7 @@
   /* ── Sidebar (template list) ── */
   .sidebar {
     background: var(--bg2);
-    border-right: 1px solid var(--border);
+    border-inline-end: 1px solid var(--border);
     overflow-y: auto;
     padding: 12px;
   }
@@ -159,7 +159,7 @@
     padding: 12px 14px;
     margin-bottom: 6px;
   }
-  .sprint-card.active { border-left: 3px solid var(--green); }
+  .sprint-card.active { border-inline-start: 3px solid var(--green); }
   .sprint-card .sprint-name {
     font-size: 11px;
     font-weight: 600;
@@ -232,8 +232,8 @@
     font-family: inherit;
     background: none;
     border-top: none;
-    border-left: none;
-    border-right: none;
+    border-inline-start: none;
+    border-inline-end: none;
   }
   .preview-tab:hover { color: var(--muted); }
   .preview-tab.active { color: var(--accent-light); border-bottom-color: var(--accent); }
@@ -258,9 +258,9 @@
   .source-view .line-num {
     display: inline-block;
     width: 36px;
-    text-align: right;
+    text-align: end;
     color: var(--dim);
-    margin-right: 16px;
+    margin-inline-end: 16px;
     user-select: none;
     opacity: 0.5;
   }
@@ -328,7 +328,7 @@
   .conn-dot.disconnected { background: var(--accent); }
   .reconnect-banner { position:fixed;top:0;left:0;right:0;z-index:9999;padding:8px 16px;background:#92400e;color:#fbbf24;font-size:12px;text-align:center;transform:translateY(-100%);transition:transform .3s;font-family:system-ui,sans-serif }
   .reconnect-banner.visible { transform:translateY(0) }
-  .reconnect-banner button { background:none;border:1px solid #fbbf24;color:#fbbf24;padding:2px 10px;border-radius:4px;cursor:pointer;font-size:11px;margin-left:8px }
+  .reconnect-banner button { background:none;border:1px solid #fbbf24;color:#fbbf24;padding:2px 10px;border-radius:4px;cursor:pointer;font-size:11px;margin-inline-start:8px }
 
   /* ── Mobile nav ── */
   .mobile-nav {
@@ -357,7 +357,7 @@
   .mobile-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
   /* ── A11y ── */
-  .skip-link{position:absolute;top:-40px;left:0;background:var(--accent);color:#fff;padding:8px 16px;z-index:10000;font-size:14px;font-weight:600;transition:top .2s}
+  .skip-link{position:absolute;top:-40px;inset-inline-start:0;background:var(--accent);color:#fff;padding:8px 16px;z-index:10000;font-size:14px;font-weight:600;transition:top .2s}
   .skip-link:focus{top:0}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
   @media (prefers-reduced-motion: reduce) {
@@ -408,13 +408,16 @@
   <!-- Main: preview pane -->
   <main class="main" id="main-content" aria-label="Barn workspace">
     <div class="preview-empty">
-      <div class="icon">&#x1F3DA;</div>
-      <div class="text">select a template to preview</div>
+      <div class="icon">B</div>
+      <div class="text" id="preview-empty-text">select a template to preview</div>
     </div>
   </main>
 </div>
 
 <script>
+// ── i18n passthrough ──
+const t = (s, v) => v ? s.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? k) : s;
+
 let state = { templates: [], sprints: [], activeSprint: null, manifest: null };
 let selected = null;
 let activeTab = 'source';
@@ -426,11 +429,11 @@ let retryCount = 0;
 function showBanner(count) {
   const b = document.getElementById('reconnectBanner');
   if (count > 5) {
-    b.innerHTML = 'Connection lost. <button onclick="retryCount=0;connect()">Retry now</button>';
+    b.innerHTML = t('Connection lost.') + ' <button onclick="retryCount=0;connect()">' + t('Retry now') + '</button>';
   } else if (count > 1) {
-    b.textContent = 'Reconnecting (attempt ' + count + ')...';
+    b.textContent = t('Reconnecting (attempt {count})...', { count });
   } else {
-    b.textContent = 'Reconnecting...';
+    b.textContent = t('Reconnecting...');
   }
   b.classList.add('visible');
 }
@@ -445,7 +448,7 @@ function connect() {
         state = msg.data;
         render();
         const ls = document.getElementById('live-status');
-        if (ls) ls.textContent = 'Updated: ' + (state.templates || []).length + ' templates loaded';
+        if (ls) ls.textContent = t('Updated: {count} templates loaded', { count: (state.templates || []).length });
       }
     } catch {}
   };
@@ -493,30 +496,30 @@ function renderToolbar() {
     const s = state.activeSprint;
     badge.innerHTML = `<span class="phase">${esc(s.phase)}</span>${esc(s.name || s.question || '').substring(0, 50)}`;
   } else {
-    badge.textContent = 'no active sprint';
+    badge.textContent = t('no active sprint');
   }
-  document.getElementById('templateCount').textContent = state.templates.length + ' templates';
+  document.getElementById('templateCount').textContent = t('{count} templates', { count: state.templates.length });
 }
 
 function renderSidebar() {
   const sidebar = document.getElementById('sidebar');
-  let html = '<div class="sidebar-header">Templates</div>';
+  let html = '<div class="sidebar-header">' + t('Templates') + '</div>';
 
-  for (const t of state.templates) {
-    const isActive = selected === t.name;
-    html += `<div class="template-card ${isActive ? 'active' : ''}" onclick="selectTemplate('${esc(t.name)}')">
-      <div class="name">${esc(t.name)}</div>
-      ${t.description ? `<div class="desc">${esc(t.description)}</div>` : ''}
+  for (const tpl of state.templates) {
+    const isActive = selected === tpl.name;
+    html += `<div class="template-card ${isActive ? 'active' : ''}" onclick="selectTemplate('${esc(tpl.name)}')">
+      <div class="name">${esc(tpl.name)}</div>
+      ${tpl.description ? `<div class="desc">${esc(tpl.description)}</div>` : ''}
       <div class="meta">
-        <span class="tag">${t.lines} lines</span>
-        <span class="tag">${formatBytes(t.size)}</span>
-        ${t.features.map(f => `<span class="tag feature">${esc(f)}</span>`).join('')}
+        <span class="tag">${tpl.lines} lines</span>
+        <span class="tag">${formatBytes(tpl.size)}</span>
+        ${tpl.features.map(f => `<span class="tag feature">${esc(f)}</span>`).join('')}
       </div>
     </div>`;
   }
 
   if (state.sprints.length > 0) {
-    html += '<div class="sidebar-header" style="margin-top:16px">Sprints</div>';
+    html += '<div class="sidebar-header" style="margin-top:16px">' + t('Sprints') + '</div>';
     for (const s of state.sprints) {
       const isActive = s.status === 'active';
       html += `<div class="sprint-card ${isActive ? 'active' : ''}">
@@ -536,20 +539,20 @@ function renderMain() {
   const main = document.getElementById('main-content');
   if (!selected) {
     main.innerHTML = `<div class="preview-empty">
-      <div class="icon">&#x1F3DA;</div>
-      <div class="text">select a template to preview</div>
+      <div class="icon">B</div>
+      <div class="text">${t('select a template to preview')}</div>
     </div>`;
     return;
   }
 
-  const t = state.templates.find(t => t.name === selected);
-  if (!t) return;
+  const tpl = state.templates.find(x => x.name === selected);
+  if (!tpl) return;
 
   main.innerHTML = `
     <div class="preview-header">
-      <span class="title">${esc(t.name)}.html</span>
-      <span class="badge">${esc(t.features[0] || 'template')}</span>
-      <span style="margin-left:auto;font-size:10px;color:var(--dim)">${t.placeholders.length} placeholders &middot; ${t.lines} lines</span>
+      <span class="title">${esc(tpl.name)}.html</span>
+      <span class="badge">${esc(tpl.features[0] || t('template'))}</span>
+      <span style="margin-inline-start:auto;font-size:10px;color:var(--dim)">${tpl.placeholders.length} placeholders &middot; ${tpl.lines} lines</span>
     </div>
     <div class="preview-tabs">
       <button class="preview-tab ${activeTab === 'source' ? 'active' : ''}" onclick="switchTab('source')">Source</button>
@@ -572,7 +575,7 @@ async function loadTabContent() {
       const text = await resp.text();
       container.innerHTML = `<div class="source-view">${highlightHTML(text)}</div>`;
     } catch {
-      container.innerHTML = '<div class="source-view">failed to load</div>';
+      container.innerHTML = '<div class="source-view">' + t('failed to load') + '</div>';
     }
   } else if (activeTab === 'preview') {
     try {
@@ -586,22 +589,22 @@ async function loadTabContent() {
       const url = URL.createObjectURL(blob);
       container.innerHTML = `<iframe class="render-frame" src="${url}"></iframe>`;
     } catch {
-      container.innerHTML = '<div class="preview-empty"><div class="text">preview failed</div></div>';
+      container.innerHTML = '<div class="preview-empty"><div class="text">' + t('preview failed') + '</div></div>';
     }
   } else if (activeTab === 'info') {
-    const t = state.templates.find(t => t.name === selected);
-    if (!t) return;
+    const tpl = state.templates.find(x => x.name === selected);
+    if (!tpl) return;
     container.innerHTML = `<div class="info-panel">
-      <h3>Template Details</h3>
-      <div class="info-row"><span class="label">File</span><span class="value">${esc(t.file)}</span></div>
-      <div class="info-row"><span class="label">Lines</span><span class="value">${t.lines}</span></div>
-      <div class="info-row"><span class="label">Size</span><span class="value">${formatBytes(t.size)}</span></div>
-      <div class="info-row"><span class="label">Features</span><span class="value">${t.features.join(', ') || 'none'}</span></div>
-      <h3 style="margin-top:24px">Placeholders</h3>
+      <h3>${t('Template Details')}</h3>
+      <div class="info-row"><span class="label">${t('File')}</span><span class="value">${esc(tpl.file)}</span></div>
+      <div class="info-row"><span class="label">${t('Lines')}</span><span class="value">${tpl.lines}</span></div>
+      <div class="info-row"><span class="label">${t('Size')}</span><span class="value">${formatBytes(tpl.size)}</span></div>
+      <div class="info-row"><span class="label">${t('Features')}</span><span class="value">${tpl.features.join(', ') || t('none')}</span></div>
+      <h3 style="margin-top:24px">${t('Placeholders')}</h3>
       <div class="placeholder-list">
-        ${t.placeholders.map(p => `<span class="placeholder-tag">${esc(p)}</span>`).join('')}
+        ${tpl.placeholders.map(p => `<span class="placeholder-tag">${esc(p)}</span>`).join('')}
       </div>
-      ${t.description ? `<h3 style="margin-top:24px">Description</h3><p style="font-size:12px;color:var(--muted);line-height:1.6;">${esc(t.description)}</p>` : ''}
+      ${tpl.description ? `<h3 style="margin-top:24px">${t('Description')}</h3><p style="font-size:12px;color:var(--muted);line-height:1.6;">${esc(tpl.description)}</p>` : ''}
     </div>`;
   }
 }
@@ -627,7 +630,7 @@ function selectTemplate(name) {
 function switchTab(tab) {
   activeTab = tab;
   const tabs = document.querySelectorAll('.preview-tab');
-  tabs.forEach(t => t.classList.toggle('active', t.textContent.toLowerCase() === tab));
+  tabs.forEach(tb => tb.classList.toggle('active', tb.textContent.toLowerCase() === tab));
   loadTabContent();
 }
 
@@ -640,7 +643,7 @@ function switchMobilePanel(panel) {
   sidebar.classList.remove('mobile-visible');
   main.classList.remove('mobile-hidden');
 
-  tabs.forEach(t => t.classList.toggle('active', t.dataset.panel === panel));
+  tabs.forEach(tb => tb.classList.toggle('active', tb.dataset.panel === panel));
 
   if (panel === 'templates') {
     sidebar.classList.add('mobile-visible');
