@@ -6,7 +6,7 @@
   "author": "grainulation contributors",
   "repository": {
     "type": "git",
-    "url": "https://github.com/grainulation/barn"
+    "url": "git+https://github.com/grainulation/barn.git"
   },
   "homepage": "https://barn.grainulation.com",
   "bugs": {
@@ -27,7 +27,8 @@
     "./server": "./lib/server.js",
     "./detect-sprints": "./tools/detect-sprints.js",
     "./generate-manifest": "./tools/generate-manifest.js",
-    "./build-pdf": "./tools/build-pdf.js"
+    "./build-pdf": "./tools/build-pdf.js",
+    "./tokens": "./public/grainulation-tokens.css"
   },
   "bin": {
     "barn": "./bin/barn.js"
@@ -37,9 +38,12 @@
     "lib/",
     "public/",
     "tools/",
-    "templates/"
+    "templates/",
+    "CHANGELOG.md"
   ],
   "scripts": {
+    "start": "node bin/barn.js serve",
+    "serve": "node bin/barn.js serve",
     "test": "node test/basic.test.js"
   },
   "engines": {

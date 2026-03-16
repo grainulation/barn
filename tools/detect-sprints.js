@@ -29,16 +29,17 @@ import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 
-// ─── CLI args ────────────────────────────────────────────────────────────────
+// ─── CLI args (only parsed when run directly) ────────────────────────────────
 
-const args = process.argv.slice(2);
+let ROOT = process.cwd();
 
-function arg(name, fallback) {
-  const i = args.indexOf(`--${name}`);
-  return i !== -1 && args[i + 1] ? args[i + 1] : fallback;
+/** Parse CLI args — only called when this file is the entry point. */
+function parseCLIArgs() {
+  const args = process.argv.slice(2);
+  const i = args.indexOf('--root');
+  if (i !== -1 && args[i + 1]) ROOT = args[i + 1];
+  return args;
 }
-
-let ROOT = arg('root', process.cwd());
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -230,6 +231,7 @@ export function detectSprints(rootDir) {
 // ─── CLI ─────────────────────────────────────────────────────────────────────
 
 if (process.argv[1] === __filename) {
+  const args = parseCLIArgs();
   if (args.includes('--help') || args.includes('-h')) {
     console.log(`detect-sprints — git-based sprint detection (no config required)
 

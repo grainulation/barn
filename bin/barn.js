@@ -23,7 +23,19 @@ const TOOLS_DIR = join(__dirname, '..', 'tools');
 
 const LIB_DIR = join(__dirname, '..', 'lib');
 
-const verbose = process.argv.includes('--verbose') || process.argv.includes('-v');
+// ── --version / -v ───────────────────────────────────────────────────────────
+import { readFileSync } from 'node:fs';
+
+const args = process.argv.slice(2);
+const command = args[0];
+
+if (command === '--version' || command === '-v') {
+  const pkg = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8'));
+  console.log(pkg.version);
+  process.exit(0);
+}
+
+const verbose = process.argv.includes('--verbose');
 function vlog(...a) {
   if (!verbose) return;
   const ts = new Date().toISOString();
@@ -36,9 +48,6 @@ const commands = {
   'generate-manifest': 'generate-manifest.js',
   'build-pdf': 'build-pdf.js',
 };
-
-const args = process.argv.slice(2);
-const command = args[0];
 
 vlog('startup', `command=${command || '(none)'}`, `cwd=${process.cwd()}`);
 
@@ -63,7 +72,8 @@ Examples:
   barn build-pdf output/brief.md
 
 Options:
-  --verbose, -v   Enable verbose logging to stderr
+  --version, -v   Print version and exit
+  --verbose        Enable verbose logging to stderr
 
 Zero npm dependencies. Node built-in only.
 https://github.com/grainulation/barn`);
