@@ -23,6 +23,14 @@ const TOOLS_DIR = join(__dirname, '..', 'tools');
 
 const LIB_DIR = join(__dirname, '..', 'lib');
 
+const verbose = process.argv.includes('--verbose') || process.argv.includes('-v');
+function vlog(...a) {
+  if (!verbose) return;
+  const ts = new Date().toISOString();
+  process.stderr.write(`[${ts}] barn: ${a.join(' ')}\n`);
+}
+export { vlog, verbose };
+
 const commands = {
   'detect-sprints': 'detect-sprints.js',
   'generate-manifest': 'generate-manifest.js',
@@ -31,6 +39,8 @@ const commands = {
 
 const args = process.argv.slice(2);
 const command = args[0];
+
+vlog('startup', `command=${command || '(none)'}`, `cwd=${process.cwd()}`);
 
 if (!command || command === 'help' || command === '--help' || command === '-h') {
   console.log(`barn — open tools for structured research
@@ -52,6 +62,9 @@ Examples:
   barn generate-manifest --root /path/to/repo
   barn build-pdf output/brief.md
 
+Options:
+  --verbose, -v   Enable verbose logging to stderr
+
 Zero npm dependencies. Node built-in only.
 https://github.com/grainulation/barn`);
   process.exit(0);
@@ -67,7 +80,7 @@ if (command === 'serve') {
   const child = fork(toolPath, args.slice(1), { stdio: 'inherit' });
   child.on('exit', (code) => process.exit(code ?? 0));
 } else {
-  console.error(`Unknown command: ${command}`);
+  console.error(`barn: unknown command: ${command}`);
   console.error(`Run "barn help" for available commands.`);
   process.exit(1);
 }
