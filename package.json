@@ -1,17 +1,36 @@
 {
   "name": "@grainulation/barn",
-  "version": "0.1.0",
-  "description": "Public tools for the grainulation ecosystem",
+  "version": "1.0.0",
+  "description": "Template browser and sprint toolkit for the grainulation ecosystem",
   "license": "MIT",
-  "type": "module",
-  "bin": {
-    "barn": "./bin/barn.js"
+  "author": "grainulation contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grainulation/barn"
   },
+  "homepage": "https://barn.grainulation.com",
+  "bugs": {
+    "url": "https://github.com/grainulation/barn/issues"
+  },
+  "keywords": [
+    "wheat",
+    "grainulation",
+    "templates",
+    "sprints",
+    "structured-research",
+    "developer-tools"
+  ],
+  "type": "module",
+  "main": "./lib/index.js",
   "exports": {
+    ".": "./lib/index.js",
+    "./server": "./lib/server.js",
     "./detect-sprints": "./tools/detect-sprints.js",
     "./generate-manifest": "./tools/generate-manifest.js",
-    "./build-pdf": "./tools/build-pdf.js",
-    "./server": "./lib/server.js"
+    "./build-pdf": "./tools/build-pdf.js"
+  },
+  "bin": {
+    "barn": "./bin/barn.js"
   },
   "files": [
     "bin/",
@@ -20,23 +39,10 @@
     "tools/",
     "templates/"
   ],
-  "engines": {
-    "node": ">=18"
-  },
   "scripts": {
     "test": "node test/basic.test.js"
   },
-  "keywords": [
-    "wheat",
-    "grainulation",
-    "research",
-    "sprints",
-    "structured-research"
-  ],
-  "author": "grainulation contributors",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/grainulation/barn.git"
-  },
-  "homepage": "https://grainulation.github.io/barn/"
+  "engines": {
+    "node": ">=18"
+  }
 }
