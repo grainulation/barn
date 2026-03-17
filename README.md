@@ -51,8 +51,23 @@ barn build-pdf output/brief.md
 
 HTML templates for sprint artifacts. Self-contained (inline CSS/JS, no external deps), dark theme, mobile responsive.
 
-- **explainer.html** -- Full-screen scroll-snap presentation. Replace `{{TITLE}}` and `{{SUBTITLE}}` placeholders, add `.slide` sections.
-- **dashboard.html** -- Sprint status dashboard. Populate from `compilation.json` data. Includes phase progress, evidence bars, conflict tracking, and claim inventory.
+- **adr.html** -- Architecture Decision Record
+- **brief.html** -- Sprint brief / recommendation document
+- **certificate.html** -- Compilation certificate
+- **changelog.html** -- Sprint changelog
+- **comparison.html** -- Side-by-side comparison dashboard
+- **conflict-map.html** -- Claim conflict visualization
+- **dashboard.html** -- Sprint status dashboard
+- **email-digest.html** -- Email digest summary
+- **evidence-matrix.html** -- Evidence tier matrix
+- **explainer.html** -- Full-screen scroll-snap presentation
+- **handoff.html** -- Knowledge transfer document
+- **one-pager.html** -- Single-page executive summary
+- **postmortem.html** -- Sprint postmortem
+- **rfc.html** -- Request for Comments
+- **risk-register.html** -- Risk tracking register
+- **slide-deck.html** -- Slide deck presentation
+- **wiki-page.html** -- Wiki-style documentation page
 
 Copy templates into your project:
 

@@ -4,7 +4,7 @@
 
 ## Scope
 
-This spec applies to all 8 grainulation tools: wheat, farmer, barn, mill, silo, harvest, orchard, grainulator. Every tool that renders claim content, SSE event data, or user input into HTML must follow these rules.
+This spec applies to all 8 grainulation tools: wheat, farmer, barn, mill, silo, harvest, orchard, grainulation. Every tool that renders claim content, SSE event data, or user input into HTML must follow these rules.
 
 ## 1. HTML Sanitization
 
@@ -160,7 +160,7 @@ Farmer is the only tool that implements authentication because it manages permis
 
 ### All other tools: local-only, no auth
 
-Wheat, barn, mill, silo, harvest, orchard, and grainulator bind to `127.0.0.1` (localhost) by default. Since they only accept local connections, no authentication is needed for v1.
+Wheat, barn, mill, silo, harvest, orchard, and grainulation bind to `127.0.0.1` (localhost) by default. Since they only accept local connections, no authentication is needed for v1.
 
 ### When to add auth to other tools
 
