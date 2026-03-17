@@ -85,6 +85,8 @@ if (command === 'serve') {
   const serverPath = join(LIB_DIR, 'server.js');
   const child = fork(serverPath, args.slice(1), { stdio: 'inherit' });
   child.on('exit', (code) => process.exit(code ?? 0));
+  process.on('SIGTERM', () => child.kill('SIGTERM'));
+  process.on('SIGINT', () => child.kill('SIGINT'));
 } else if (commands[command]) {
   const toolPath = join(TOOLS_DIR, commands[command]);
   const child = fork(toolPath, args.slice(1), { stdio: 'inherit' });
