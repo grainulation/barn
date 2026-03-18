@@ -153,7 +153,7 @@ function safePath(base, requested) {
 Farmer is the only tool that implements authentication because it manages permissions and multi-session state.
 
 - Token generated on first server start, persisted to `.farmer-token`
-- Token required for all API endpoints and WebSocket connections
+- Token required for all API endpoints and SSE connections
 - Token passed via `Authorization: Bearer <token>` header or `?token=<token>` query param
 - Token is a cryptographically random 32-byte hex string
 - `.farmer-token` file permissions: 0600 (owner read/write only)
