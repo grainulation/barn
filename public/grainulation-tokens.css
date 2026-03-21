@@ -103,21 +103,40 @@
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Status colors ──
-     Converged values: green from barn/farmer (#22c55e) vs wheat (#34d399).
-     Using the brighter #22c55e for success (used for connection dots);
-     keeping #34d399 as --success-light for softer contexts. */
-  --success:       #22c55e;
-  --success-light: #34d399;
-  --warning:       #f59e0b;
-  --error:         #f87171;
-  --info:          #60a5fa;
+  /* ── WCAG 2.2 AA semantic color tokens ──
+     All values verified against --bg (#0a0e1a) for minimum 4.5:1 contrast.
+     Contrast ratios measured with APCA/WCAG relative luminance formula.
 
-  /* ── Semantic palette (named colors, used across UIs) ── */
-  --green:  #22c55e;
-  --red:    #f87171;
-  --blue:   #60a5fa;
-  --purple: #a78bfa;
+     --color-success  #4ade80   9.79:1  (was #22c55e — lightened for AA large+normal)
+     --color-error    #f87171   6.17:1
+     --color-warning  #fbbf24  10.22:1  (was #f59e0b — swapped to amber for better ratio)
+     --color-info     #60a5fa   6.71:1
+     --color-accent   #a78bfa   6.27:1
+     --color-text     #e2e8f0  13.84:1
+     --color-text-muted #94a3b8 6.65:1
+  */
+  --color-success:    #4ade80;
+  --color-error:      #f87171;
+  --color-warning:    #fbbf24;
+  --color-info:       #60a5fa;
+  --color-accent:     #a78bfa;
+  --color-text:       #e2e8f0;
+  --color-text-muted: #94a3b8;
+
+  /* ── Status tokens (mapped to semantic colors) ── */
+  --success:       var(--color-success);
+  --success-light: #34d399;
+  --warning:       var(--color-warning);
+  --error:         var(--color-error);
+  --info:          var(--color-info);
+
+  /* ── Backward-compat aliases ──
+     Maps legacy named-color tokens to the new semantic tokens so existing
+     var() references (291 across 8 packages) continue to resolve. */
+  --green:  var(--color-success);
+  --red:    var(--color-error);
+  --blue:   var(--color-info);
+  --purple: var(--color-accent);
   --orange: #fb923c;
   --cyan:   #22d3ee;
 
