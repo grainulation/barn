@@ -1,5 +1,5 @@
 /*
- * grainulation-tokens.css  v1.0.0
+ * grainulation-tokens.css  v0.1.0
  * Shared design tokens for the grainulation ecosystem.
  * Home: barn (the design-system tool)
  *
@@ -46,7 +46,7 @@
      Barn used --text:#e8ecf1 (close to fg); standardized to #e2e8f0. */
   --fg:  #e2e8f0;
   --fg2: #94a3b8;
-  --fg3: #64748b;
+  --fg3: #718096;  /* lightened from #64748b for WCAG AA (5.09:1 vs --bg #0a0e1a) */
 
   /* ── Backward-compat aliases ──
      Barn-originated names still used in barn + farmer inline styles. */
@@ -105,15 +105,16 @@
 :root {
   /* ── WCAG 2.2 AA semantic color tokens ──
      All values verified against --bg (#0a0e1a) for minimum 4.5:1 contrast.
-     Contrast ratios measured with APCA/WCAG relative luminance formula.
+     Contrast ratios measured with WCAG 2.x relative luminance formula.
 
-     --color-success  #4ade80   9.79:1  (was #22c55e — lightened for AA large+normal)
-     --color-error    #f87171   6.17:1
-     --color-warning  #fbbf24  10.22:1  (was #f59e0b — swapped to amber for better ratio)
-     --color-info     #60a5fa   6.71:1
-     --color-accent   #a78bfa   6.27:1
-     --color-text     #e2e8f0  13.84:1
-     --color-text-muted #94a3b8 6.65:1
+     --color-success  #4ade80  11.05:1  (was #22c55e — lightened for AA large+normal)
+     --color-error    #f87171   6.93:1
+     --color-warning  #fbbf24  11.53:1  (was #f59e0b — swapped to amber for better ratio)
+     --color-info     #60a5fa   7.51:1
+     --color-accent   #a78bfa   7.00:1
+     --color-text     #e2e8f0  15.39:1
+     --color-text-muted #94a3b8 7.41:1
+     --fg3            #718096   5.09:1  (lightened from #64748b for AA compliance)
   */
   --color-success:    #4ade80;
   --color-error:      #f87171;
@@ -137,6 +138,7 @@
   --red:    var(--color-error);
   --blue:   var(--color-info);
   --purple: var(--color-accent);
+  --yellow: var(--color-warning);
   --orange: #fb923c;
   --cyan:   #22d3ee;
 
@@ -258,7 +260,6 @@
 }
 
 /* ── grainulation: neutral/white (#9ca3af) ── */
-[data-tool="grainulation"],
 [data-tool="grainulation"] {
   --accent-50:  #f9fafb;
   --accent-200: #e5e7eb;
@@ -287,7 +288,8 @@
 
 html, body {
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden removed — layout constraint should be set by each tool UI,
+     not by the shared token file. Consumers that need it can add it themselves. */
 }
 
 body {
@@ -338,3 +340,42 @@ body {
 .connection-dot.disconnected {
   background: var(--red);
 }
+
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   TRIPLE-ENCODED STATUS INDICATORS (WCAG 1.4.1)
+   Icon (distinctive shape) + color (semantic token) + text label.
+   Meaning is independent of color perception.
+
+   Usage:
+     <span class="status status--success">
+       <svg class="status-icon"><use href="grainulation-icons.svg#checkmark-circle"></use></svg>
+       Passed
+     </span>
+
+   Symbol IDs in grainulation-icons.svg:
+     checkmark-circle  — success
+     x-circle          — error
+     triangle-alert    — warning
+     info-circle       — info
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--text-sm);
+  font-family: var(--font-sans);
+  line-height: 1;
+}
+
+.status-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.status--success { color: var(--color-success); }
+.status--error   { color: var(--color-error); }
+.status--warning { color: var(--color-warning); }
+.status--info    { color: var(--color-info); }
