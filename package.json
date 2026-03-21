@@ -28,7 +28,8 @@
     "./detect-sprints": "./tools/detect-sprints.js",
     "./generate-manifest": "./tools/generate-manifest.js",
     "./build-pdf": "./tools/build-pdf.js",
-    "./tokens": "./public/grainulation-tokens.css"
+    "./tokens": "./public/grainulation-tokens.css",
+    "./status-icons": "./public/status-icons.svg"
   },
   "bin": {
     "barn": "./bin/barn.js"

@@ -14,44 +14,51 @@
  * Zero npm dependencies (Node built-in only).
  */
 
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-import { fork } from 'node:child_process';
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { fork } from "node:child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const TOOLS_DIR = join(__dirname, '..', 'tools');
+const TOOLS_DIR = join(__dirname, "..", "tools");
 
-const LIB_DIR = join(__dirname, '..', 'lib');
+const LIB_DIR = join(__dirname, "..", "lib");
 
 // ── --version / -v ───────────────────────────────────────────────────────────
-import { readFileSync } from 'node:fs';
+import { readFileSync } from "node:fs";
 
 const args = process.argv.slice(2);
 const command = args[0];
 
-if (command === '--version' || command === '-v') {
-  const pkg = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8'));
+if (command === "--version" || command === "-v") {
+  const pkg = JSON.parse(
+    readFileSync(join(__dirname, "..", "package.json"), "utf8"),
+  );
   console.log(pkg.version);
   process.exit(0);
 }
 
-const verbose = process.argv.includes('--verbose');
+const verbose = process.argv.includes("--verbose");
 function vlog(...a) {
   if (!verbose) return;
   const ts = new Date().toISOString();
-  process.stderr.write(`[${ts}] barn: ${a.join(' ')}\n`);
+  process.stderr.write(`[${ts}] barn: ${a.join(" ")}\n`);
 }
 export { vlog, verbose };
 
 const commands = {
-  'detect-sprints': 'detect-sprints.js',
-  'generate-manifest': 'generate-manifest.js',
-  'build-pdf': 'build-pdf.js',
+  "detect-sprints": "detect-sprints.js",
+  "generate-manifest": "generate-manifest.js",
+  "build-pdf": "build-pdf.js",
 };
 
-vlog('startup', `command=${command || '(none)'}`, `cwd=${process.cwd()}`);
+vlog("startup", `command=${command || "(none)"}`, `cwd=${process.cwd()}`);
 
-if (!command || command === 'help' || command === '--help' || command === '-h') {
+if (
+  !command ||
+  command === "help" ||
+  command === "--help" ||
+  command === "-h"
+) {
   console.log(`barn — open tools for structured research
 
 Usage:
@@ -81,16 +88,16 @@ https://github.com/grainulation/barn`);
 }
 
 // ── serve command (lib/server.js) ──
-if (command === 'serve') {
-  const serverPath = join(LIB_DIR, 'server.js');
-  const child = fork(serverPath, args.slice(1), { stdio: 'inherit' });
-  child.on('exit', (code) => process.exit(code ?? 0));
-  process.on('SIGTERM', () => child.kill('SIGTERM'));
-  process.on('SIGINT', () => child.kill('SIGINT'));
+if (command === "serve") {
+  const serverPath = join(LIB_DIR, "server.js");
+  const child = fork(serverPath, args.slice(1), { stdio: "inherit" });
+  child.on("exit", (code) => process.exit(code ?? 0));
+  process.on("SIGTERM", () => child.kill("SIGTERM"));
+  process.on("SIGINT", () => child.kill("SIGINT"));
 } else if (commands[command]) {
   const toolPath = join(TOOLS_DIR, commands[command]);
-  const child = fork(toolPath, args.slice(1), { stdio: 'inherit' });
-  child.on('exit', (code) => process.exit(code ?? 0));
+  const child = fork(toolPath, args.slice(1), { stdio: "inherit" });
+  child.on("exit", (code) => process.exit(code ?? 0));
 } else {
   console.error(`barn: unknown command: ${command}`);
   console.error(`Run "barn help" for available commands.`);
