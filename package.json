@@ -51,6 +51,6 @@
     "test": "node test/basic.test.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   }
 }
