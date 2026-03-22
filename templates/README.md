@@ -7,10 +7,12 @@ Self-contained HTML templates for research sprint artifacts. No external depende
 Full-screen scroll-snap presentation template. Each `.slide` div fills the viewport and snaps into place on scroll.
 
 **Placeholders to replace:**
+
 - `{{TITLE}}` -- main presentation title
 - `{{SUBTITLE}}` -- subtitle/description
 
 **Layout components:**
+
 - `.slide` -- full-screen section (scroll-snap aligned)
 - `.card` -- content card with colored left border (add `.green`, `.orange`, `.red`, `.purple`, `.pink`)
 - `.two-col` / `.three-col` -- column layouts
@@ -26,6 +28,7 @@ Full-screen scroll-snap presentation template. Each `.slide` div fills the viewp
 Sprint status dashboard. Designed to be populated from `compilation.json` data.
 
 **Sections:**
+
 - Phase progress track (define/research/prototype/evaluate/compile)
 - Evidence strength bars by topic
 - Conflict tracker (unresolved + resolved)
@@ -34,6 +37,7 @@ Sprint status dashboard. Designed to be populated from `compilation.json` data.
 - Full claim inventory table with type/evidence badges
 
 **Badge classes:**
+
 - Claim types: `.factual`, `.constraint`, `.estimate`, `.risk`, `.recommendation`, `.feedback`
 - Evidence tiers: `.production`, `.tested`, `.documented`, `.web`, `.stated`
 

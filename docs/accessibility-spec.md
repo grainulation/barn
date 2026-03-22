@@ -12,12 +12,12 @@ Every tool UI must define these landmark regions so screen readers can navigate 
 
 ### Required landmarks
 
-| Landmark           | ARIA role       | HTML element   | Purpose                                    |
-|--------------------|-----------------|----------------|--------------------------------------------|
-| Main content       | `main`          | `<main>`       | Primary content area (claim list, dashboard)|
-| Navigation         | `navigation`    | `<nav>`        | Sidebar, tab bar, or breadcrumb            |
-| Sidebar            | `complementary` | `<aside>`      | Secondary info (filters, metadata, help)   |
-| Header             | `banner`        | `<header>`     | Tool name, status indicators, global actions|
+| Landmark     | ARIA role       | HTML element | Purpose                                      |
+| ------------ | --------------- | ------------ | -------------------------------------------- |
+| Main content | `main`          | `<main>`     | Primary content area (claim list, dashboard) |
+| Navigation   | `navigation`    | `<nav>`      | Sidebar, tab bar, or breadcrumb              |
+| Sidebar      | `complementary` | `<aside>`    | Secondary info (filters, metadata, help)     |
+| Header       | `banner`        | `<header>`   | Tool name, status indicators, global actions |
 
 ### Implementation pattern
 
@@ -50,15 +50,15 @@ All tool UIs must be fully operable with keyboard only. No functionality should 
 
 ### Required key bindings
 
-| Key           | Action                                          | Context          |
-|---------------|-------------------------------------------------|------------------|
-| `Tab`         | Move focus to next interactive element           | Global           |
-| `Shift+Tab`   | Move focus to previous interactive element      | Global           |
-| `Enter`       | Activate focused element (button, link, action) | Global           |
-| `Space`       | Toggle checkbox, activate button                 | Global           |
-| `Escape`      | Dismiss modal, close dropdown, exit overlay     | Overlays         |
-| `Arrow Up/Down` | Navigate within list, menu, or dropdown       | Lists/menus      |
-| `Home/End`    | Jump to first/last item in list                 | Lists            |
+| Key             | Action                                          | Context     |
+| --------------- | ----------------------------------------------- | ----------- |
+| `Tab`           | Move focus to next interactive element          | Global      |
+| `Shift+Tab`     | Move focus to previous interactive element      | Global      |
+| `Enter`         | Activate focused element (button, link, action) | Global      |
+| `Space`         | Toggle checkbox, activate button                | Global      |
+| `Escape`        | Dismiss modal, close dropdown, exit overlay     | Overlays    |
+| `Arrow Up/Down` | Navigate within list, menu, or dropdown         | Lists/menus |
+| `Home/End`      | Jump to first/last item in list                 | Lists       |
 
 ### Tab order rules
 
@@ -86,6 +86,7 @@ All tool UIs must be fully operable with keyboard only. No functionality should 
 ### Modal dialogs
 
 When a modal opens:
+
 1. Move focus to the first focusable element inside the modal (or the modal container if no focusable elements).
 2. Trap focus inside the modal — Tab and Shift+Tab cycle within the modal.
 3. When the modal closes, return focus to the element that triggered the modal.
@@ -95,13 +96,13 @@ When a modal opens:
 ```javascript
 function trapFocus(modal) {
   const focusable = modal.querySelectorAll(
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
   );
   const first = focusable[0];
   const last = focusable[focusable.length - 1];
 
-  modal.addEventListener('keydown', (e) => {
-    if (e.key !== 'Tab') return;
+  modal.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
     if (e.shiftKey && document.activeElement === first) {
       e.preventDefault();
       last.focus();
@@ -132,18 +133,18 @@ function trapFocus(modal) {
 
 The grainulation dark design system uses these tokens. Verify each meets the 4.5:1 minimum against the background:
 
-| Token            | Typical value | Background   | Contrast ratio | Passes? |
-|------------------|---------------|--------------|----------------|---------|
-| `--text-primary` | `#e2e8f0`     | `#0a0e1a`    | 14.53:1        | Yes     |
-| `--text-secondary`| `#94a3b8`    | `#0a0e1a`    | 6.98:1         | Yes     |
-| `--text-muted`   | `#64748b`     | `#0a0e1a`    | 3.76:1         | No*     |
-| `--accent-wheat` | `#fbbf24`     | `#0a0e1a`    | 10.74:1        | Yes     |
-| `--accent-barn`  | `#e11d48`     | `#0a0e1a`    | 3.97:1         | No**    |
-| `--accent-farmer`| `#22c55e`     | `#0a0e1a`    | 7.87:1         | Yes     |
+| Token              | Typical value | Background | Contrast ratio | Passes? |
+| ------------------ | ------------- | ---------- | -------------- | ------- |
+| `--text-primary`   | `#e2e8f0`     | `#0a0e1a`  | 14.53:1        | Yes     |
+| `--text-secondary` | `#94a3b8`     | `#0a0e1a`  | 6.98:1         | Yes     |
+| `--text-muted`     | `#64748b`     | `#0a0e1a`  | 3.76:1         | No\*    |
+| `--accent-wheat`   | `#fbbf24`     | `#0a0e1a`  | 10.74:1        | Yes     |
+| `--accent-barn`    | `#e11d48`     | `#0a0e1a`  | 3.97:1         | No\*\*  |
+| `--accent-farmer`  | `#22c55e`     | `#0a0e1a`  | 7.87:1         | Yes     |
 
-*`--text-muted` at 3.76:1 fails AA for normal text. Options: lighten to meet 4.5:1 or restrict use to large text / decorative elements only.
+\*`--text-muted` at 3.76:1 fails AA for normal text. Options: lighten to meet 4.5:1 or restrict use to large text / decorative elements only.
 
-**`--accent-barn` at 3.97:1 fails AA for normal text. Use only for large text, icons, or decorative elements — or pair with a lighter text label for body copy.
+\*\*`--accent-barn` at 3.97:1 fails AA for normal text. Use only for large text, icons, or decorative elements — or pair with a lighter text label for body copy.
 
 ### Rules
 
@@ -188,7 +189,9 @@ Claim lists rendered as tables must include proper headers:
 
 ```html
 <table>
-  <caption>Sprint claims</caption>
+  <caption>
+    Sprint claims
+  </caption>
   <thead>
     <tr>
       <th scope="col">ID</th>
@@ -197,7 +200,9 @@ Claim lists rendered as tables must include proper headers:
       <th scope="col">Evidence</th>
     </tr>
   </thead>
-  <tbody>...</tbody>
+  <tbody>
+    ...
+  </tbody>
 </table>
 ```
 
@@ -209,7 +214,9 @@ All animations and transitions must be disabled when the user prefers reduced mo
 
 ```css
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -242,6 +249,6 @@ Before shipping a tool UI, verify:
 
 ## Changelog
 
-| Date       | Change                    |
-|------------|---------------------------|
+| Date       | Change                             |
+| ---------- | ---------------------------------- |
 | 2026-03-15 | Initial spec (addresses r042/r059) |

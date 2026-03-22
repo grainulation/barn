@@ -15,16 +15,20 @@ No `npm install` needed -- barn has zero dependencies.
 ## How to contribute
 
 ### Report a bug
+
 Open an issue with:
+
 - What you expected
 - What happened instead
 - Your Node version (`node --version`)
 - Steps to reproduce
 
 ### Suggest a feature
+
 Open an issue describing the use case, not just the solution. "I need X because Y" is more useful than "add X."
 
 ### Submit a PR
+
 1. Fork the repo
 2. Create a branch (`git checkout -b fix/description`)
 3. Make your changes
@@ -33,6 +37,7 @@ Open an issue describing the use case, not just the solution. "I need X because 
 6. Open a PR
 
 ### Add a template
+
 Templates live in `templates/`. Each template is a pair: an HTML file and a JSON schema file. To add one:
 
 1. Create `templates/your-template.html` and `templates/your-template.json`
@@ -74,11 +79,13 @@ Tests use Node's built-in test runner. No test framework dependencies.
 ## Commit messages
 
 Follow the existing pattern:
+
 ```
 barn: <what changed>
 ```
 
 Examples:
+
 ```
 barn: add postmortem template
 barn: fix server SSE reconnection

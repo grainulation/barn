@@ -58,6 +58,7 @@ Each grainulation data format includes a `schema_version` field at the top level
 ### Version format
 
 `schema_version` uses semver-like `MAJOR.MINOR`:
+
 - **MAJOR**: breaking changes (fields removed, renamed, or retyped)
 - **MINOR**: additive changes (new optional fields, new enum values)
 
@@ -82,14 +83,14 @@ Minor bumps do not require migration. Major bumps do.
 
 ### Examples
 
-| Change                                    | Version bump | Migration? |
-|-------------------------------------------|-------------|------------|
-| Add optional `priority` field to claims    | 1.0 -> 1.1 | No         |
-| Add `"decision"` claim type               | 1.0 -> 1.1 | No         |
-| Rename `content` to `body`                | 1.0 -> 2.0 | Yes        |
-| Change `tags` from string to array        | 1.0 -> 2.0 | Yes        |
-| Add `resolved_at` timestamp field         | 1.0 -> 1.1 | No         |
-| Change certificate hash algorithm         | 1.0 -> 2.0 | Yes        |
+| Change                                  | Version bump | Migration? |
+| --------------------------------------- | ------------ | ---------- |
+| Add optional `priority` field to claims | 1.0 -> 1.1   | No         |
+| Add `"decision"` claim type             | 1.0 -> 1.1   | No         |
+| Rename `content` to `body`              | 1.0 -> 2.0   | Yes        |
+| Change `tags` from string to array      | 1.0 -> 2.0   | Yes        |
+| Add `resolved_at` timestamp field       | 1.0 -> 1.1   | No         |
+| Change certificate hash algorithm       | 1.0 -> 2.0   | Yes        |
 
 ## 3. Migration Pattern
 
@@ -111,19 +112,19 @@ Every tool that reads grainulation data formats must include a `migrate.js` (or 
  *   node migrate.js claims.json --backup   # create claims.json.bak first
  */
 
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from "fs";
 
-const CURRENT_VERSION = '1.0';
+const CURRENT_VERSION = "1.0";
 
 const migrations = {
   // Each key is "fromVersion -> toVersion"
   // Each value is a function that transforms the data
-  '1.0 -> 2.0': (data) => {
+  "1.0 -> 2.0": (data) => {
     // Example: rename content to body
     return {
       ...data,
-      schema_version: '2.0',
-      claims: data.claims.map(claim => ({
+      schema_version: "2.0",
+      claims: data.claims.map((claim) => ({
         ...claim,
         body: claim.content,
         content: undefined,
@@ -133,7 +134,7 @@ const migrations = {
 };
 
 function detectVersion(data) {
-  return data.schema_version || '1.0';
+  return data.schema_version || "1.0";
 }
 
 function migrate(data, targetVersion) {
@@ -141,11 +142,13 @@ function migrate(data, targetVersion) {
   let result = { ...data };
 
   while (current !== targetVersion) {
-    const key = Object.keys(migrations).find(k => k.startsWith(current + ' ->'));
+    const key = Object.keys(migrations).find((k) =>
+      k.startsWith(current + " ->"),
+    );
     if (!key) {
       throw new Error(
         `No migration path from ${current} to ${targetVersion}. ` +
-        `Available migrations: ${Object.keys(migrations).join(', ')}`
+          `Available migrations: ${Object.keys(migrations).join(", ")}`,
       );
     }
     result = migrations[key](result);
@@ -161,14 +164,14 @@ export { migrate, detectVersion, CURRENT_VERSION };
 if (import.meta.url === `file://${process.argv[1]}`) {
   const file = process.argv[2];
   if (!file) {
-    console.error('Usage: node migrate.js <file> [--dry-run] [--backup]');
+    console.error("Usage: node migrate.js <file> [--dry-run] [--backup]");
     process.exit(1);
   }
 
-  const dryRun = process.argv.includes('--dry-run');
-  const backup = process.argv.includes('--backup');
+  const dryRun = process.argv.includes("--dry-run");
+  const backup = process.argv.includes("--backup");
 
-  const raw = readFileSync(file, 'utf8');
+  const raw = readFileSync(file, "utf8");
   const data = JSON.parse(raw);
   const fromVersion = detectVersion(data);
 
@@ -181,14 +184,14 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const migrated = migrate(data, CURRENT_VERSION);
 
   if (dryRun) {
-    console.log('Dry run — no files modified.');
+    console.log("Dry run — no files modified.");
     console.log(JSON.stringify(migrated, null, 2));
   } else {
     if (backup) {
-      writeFileSync(file + '.bak', raw);
+      writeFileSync(file + ".bak", raw);
       console.log(`Backup written to ${file}.bak`);
     }
-    writeFileSync(file, JSON.stringify(migrated, null, 2) + '\n');
+    writeFileSync(file, JSON.stringify(migrated, null, 2) + "\n");
     console.log(`Migration complete: ${file}`);
   }
 }
@@ -219,7 +222,7 @@ When a tool reads an older format, it applies migrations in memory:
 
 ```javascript
 function loadClaims(filePath) {
-  const raw = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  const raw = JSON.parse(fs.readFileSync(filePath, "utf8"));
   const version = detectVersion(raw);
 
   if (version === CURRENT_VERSION) {
@@ -229,7 +232,7 @@ function loadClaims(filePath) {
   // Auto-upgrade in memory (does not modify file)
   console.warn(
     `Warning: ${filePath} uses schema version ${version}, ` +
-    `current is ${CURRENT_VERSION}. Run 'node migrate.js ${filePath}' to upgrade.`
+      `current is ${CURRENT_VERSION}. Run 'node migrate.js ${filePath}' to upgrade.`,
   );
   return migrate(raw, CURRENT_VERSION);
 }
@@ -243,8 +246,8 @@ If a tool encounters a schema version newer than it supports, it must warn and e
 if (majorVersion(version) > majorVersion(CURRENT_VERSION)) {
   console.error(
     `Error: ${filePath} uses schema version ${version}, ` +
-    `but this tool only supports up to ${CURRENT_VERSION}. ` +
-    `Please update @grainulation/${toolName} to the latest version.`
+      `but this tool only supports up to ${CURRENT_VERSION}. ` +
+      `Please update @grainulation/${toolName} to the latest version.`,
   );
   process.exit(1);
 }
@@ -280,12 +283,12 @@ When tools exchange data (e.g., silo importing from mill, harvest reading from w
 
 ## 6. Version History
 
-| Version | Date       | Changes                     |
-|---------|------------|-----------------------------|
+| Version | Date       | Changes                    |
+| ------- | ---------- | -------------------------- |
 | 1.0     | 2026-03-15 | Initial schema (v1 launch) |
 
 ## Changelog
 
-| Date       | Change                    |
-|------------|---------------------------|
+| Date       | Change                              |
+| ---------- | ----------------------------------- |
 | 2026-03-15 | Initial guide (addresses r042/r059) |

@@ -22,10 +22,10 @@
  * Zero npm dependencies (Node built-in only).
  */
 
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
-import { join, basename } from 'node:path';
-import { execFileSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { join, basename } from "node:path";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -36,7 +36,7 @@ let ROOT = process.cwd();
 /** Parse CLI args — only called when this file is the entry point. */
 function parseCLIArgs() {
   const args = process.argv.slice(2);
-  const i = args.indexOf('--root');
+  const i = args.indexOf("--root");
   if (i !== -1 && args[i + 1]) ROOT = args[i + 1];
   return args;
 }
@@ -46,7 +46,7 @@ function parseCLIArgs() {
 /** Safely parse JSON from a file path; returns null on failure. */
 function loadJSON(filePath) {
   try {
-    return JSON.parse(readFileSync(filePath, 'utf8'));
+    return JSON.parse(readFileSync(filePath, "utf8"));
   } catch {
     return null;
   }
@@ -58,9 +58,11 @@ function loadJSON(filePath) {
  */
 function lastGitCommitDate(filePath) {
   try {
-    const result = execFileSync('git', [
-      'log', '-1', '--format=%aI', '--', filePath
-    ], { cwd: ROOT, timeout: 5000, stdio: ['ignore', 'pipe', 'pipe'] });
+    const result = execFileSync(
+      "git",
+      ["log", "-1", "--format=%aI", "--", filePath],
+      { cwd: ROOT, timeout: 5000, stdio: ["ignore", "pipe", "pipe"] },
+    );
     const dateStr = result.toString().trim();
     return dateStr || null;
   } catch {
@@ -73,9 +75,11 @@ function lastGitCommitDate(filePath) {
  */
 function gitCommitCount(filePath) {
   try {
-    const result = execFileSync('git', [
-      'rev-list', '--count', 'HEAD', '--', filePath
-    ], { cwd: ROOT, timeout: 5000, stdio: ['ignore', 'pipe', 'pipe'] });
+    const result = execFileSync(
+      "git",
+      ["rev-list", "--count", "HEAD", "--", filePath],
+      { cwd: ROOT, timeout: 5000, stdio: ["ignore", "pipe", "pipe"] },
+    );
     return parseInt(result.toString().trim(), 10) || 0;
   } catch {
     return 0;
@@ -86,18 +90,18 @@ function gitCommitCount(filePath) {
  * Derive a slug from the sprint's path or question.
  */
 function deriveName(sprintPath, meta) {
-  if (sprintPath !== '.') {
+  if (sprintPath !== ".") {
     return basename(sprintPath);
   }
   if (meta?.question) {
     return meta.question
       .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/[^a-z0-9\s]/g, "")
       .split(/\s+/)
       .slice(0, 4)
-      .join('-');
+      .join("-");
   }
-  return 'current';
+  return "current";
 }
 
 // ─── Scanner ─────────────────────────────────────────────────────────────────
@@ -106,25 +110,27 @@ function deriveName(sprintPath, meta) {
 function findSprintRoots() {
   const roots = [];
 
-  const rootClaims = join(ROOT, 'claims.json');
+  const rootClaims = join(ROOT, "claims.json");
   if (existsSync(rootClaims)) {
-    roots.push({ claimsPath: rootClaims, sprintPath: '.' });
+    roots.push({ claimsPath: rootClaims, sprintPath: "." });
   }
 
-  const examplesDir = join(ROOT, 'examples');
+  const examplesDir = join(ROOT, "examples");
   if (existsSync(examplesDir)) {
     try {
       for (const entry of readdirSync(examplesDir, { withFileTypes: true })) {
         if (!entry.isDirectory()) continue;
-        const claimsPath = join(examplesDir, entry.name, 'claims.json');
+        const claimsPath = join(examplesDir, entry.name, "claims.json");
         if (existsSync(claimsPath)) {
           roots.push({
             claimsPath,
-            sprintPath: join('examples', entry.name),
+            sprintPath: join("examples", entry.name),
           });
         }
       }
-    } catch { /* skip if unreadable */ }
+    } catch {
+      /* skip if unreadable */
+    }
   }
 
   return roots;
@@ -142,29 +148,31 @@ function analyzeSprint(root) {
   const lastCommit = lastGitCommitDate(root.claimsPath);
   const commitCount = gitCommitCount(root.claimsPath);
 
-  const phase = meta.phase || 'unknown';
-  const isArchived = phase === 'archived' || phase === 'complete';
-  const isExample = root.sprintPath.startsWith('examples/') || root.sprintPath.startsWith('examples\\');
+  const phase = meta.phase || "unknown";
+  const isArchived = phase === "archived" || phase === "complete";
+  const isExample =
+    root.sprintPath.startsWith("examples/") ||
+    root.sprintPath.startsWith("examples\\");
 
   let status;
   if (isArchived) {
-    status = 'archived';
+    status = "archived";
   } else if (isExample) {
-    status = 'example';
+    status = "example";
   } else {
-    status = 'candidate';
+    status = "candidate";
   }
 
   return {
     name: deriveName(root.sprintPath, meta),
     path: root.sprintPath,
-    question: meta.question || '',
+    question: meta.question || "",
     phase,
     initiated: meta.initiated || null,
     last_git_activity: lastCommit,
     git_commit_count: commitCount,
     claims_count: claimsList.length,
-    active_claims: claimsList.filter(c => c.status === 'active').length,
+    active_claims: claimsList.filter((c) => c.status === "active").length,
     status,
   };
 }
@@ -183,12 +191,16 @@ export function detectSprints(rootDir) {
   const roots = findSprintRoots();
   const sprints = roots.map(analyzeSprint).filter(Boolean);
 
-  const candidates = sprints.filter(s => s.status === 'candidate');
-  const others = sprints.filter(s => s.status !== 'candidate');
+  const candidates = sprints.filter((s) => s.status === "candidate");
+  const others = sprints.filter((s) => s.status !== "candidate");
 
   candidates.sort((a, b) => {
-    const dateA = a.last_git_activity ? new Date(a.last_git_activity).getTime() : 0;
-    const dateB = b.last_git_activity ? new Date(b.last_git_activity).getTime() : 0;
+    const dateA = a.last_git_activity
+      ? new Date(a.last_git_activity).getTime()
+      : 0;
+    const dateB = b.last_git_activity
+      ? new Date(b.last_git_activity).getTime()
+      : 0;
     if (dateB !== dateA) return dateB - dateA;
 
     const initA = a.initiated ? new Date(a.initiated).getTime() : 0;
@@ -200,28 +212,36 @@ export function detectSprints(rootDir) {
 
   let active = null;
   if (candidates.length > 0) {
-    candidates[0].status = 'active';
+    candidates[0].status = "active";
     active = candidates[0];
   }
 
   if (!active && others.length > 0) {
-    const nonArchived = others.filter(s => s.status !== 'archived');
+    const nonArchived = others.filter((s) => s.status !== "archived");
     if (nonArchived.length > 0) {
       nonArchived.sort((a, b) => {
-        const dateA = a.last_git_activity ? new Date(a.last_git_activity).getTime() : 0;
-        const dateB = b.last_git_activity ? new Date(b.last_git_activity).getTime() : 0;
+        const dateA = a.last_git_activity
+          ? new Date(a.last_git_activity).getTime()
+          : 0;
+        const dateB = b.last_git_activity
+          ? new Date(b.last_git_activity).getTime()
+          : 0;
         return dateB - dateA;
       });
-      nonArchived[0].status = 'active';
+      nonArchived[0].status = "active";
       active = nonArchived[0];
     }
   }
 
   const allSprints = [...candidates, ...others].sort((a, b) => {
-    if (a.status === 'active' && b.status !== 'active') return -1;
-    if (b.status === 'active' && a.status !== 'active') return 1;
-    const dateA = a.last_git_activity ? new Date(a.last_git_activity).getTime() : 0;
-    const dateB = b.last_git_activity ? new Date(b.last_git_activity).getTime() : 0;
+    if (a.status === "active" && b.status !== "active") return -1;
+    if (b.status === "active" && a.status !== "active") return 1;
+    const dateA = a.last_git_activity
+      ? new Date(a.last_git_activity).getTime()
+      : 0;
+    const dateB = b.last_git_activity
+      ? new Date(b.last_git_activity).getTime()
+      : 0;
     return dateB - dateA;
   });
 
@@ -232,7 +252,7 @@ export function detectSprints(rootDir) {
 
 if (process.argv[1] === __filename) {
   const args = parseCLIArgs();
-  if (args.includes('--help') || args.includes('-h')) {
+  if (args.includes("--help") || args.includes("-h")) {
     console.log(`detect-sprints — git-based sprint detection (no config required)
 
 Usage:
@@ -250,16 +270,16 @@ sprint using git commit history and metadata — no config pointer needed.`);
   const result = detectSprints();
   const elapsed = (performance.now() - t0).toFixed(1);
 
-  if (args.includes('--json')) {
+  if (args.includes("--json")) {
     console.log(JSON.stringify(result, null, 2));
     process.exit(0);
   }
 
-  if (args.includes('--active')) {
+  if (args.includes("--active")) {
     if (result.active) {
       console.log(result.active.path);
     } else {
-      console.error('No active sprint detected.');
+      console.error("No active sprint detected.");
       process.exit(1);
     }
     process.exit(0);
@@ -267,26 +287,30 @@ sprint using git commit history and metadata — no config pointer needed.`);
 
   // Human-readable output
   console.log(`Sprint Detection (${elapsed}ms)`);
-  console.log('='.repeat(50));
+  console.log("=".repeat(50));
   console.log(`Found ${result.sprints.length} sprint(s)\n`);
 
   for (const sprint of result.sprints) {
-    const icon = sprint.status === 'active' ? '>>>' : '   ';
+    const icon = sprint.status === "active" ? ">>>" : "   ";
     const statusTag = sprint.status.toUpperCase().padEnd(8);
     console.log(`${icon} [${statusTag}] ${sprint.name}`);
     console.log(`    Path:     ${sprint.path}`);
     console.log(`    Phase:    ${sprint.phase}`);
-    console.log(`    Claims:   ${sprint.claims_count} total, ${sprint.active_claims} active`);
-    console.log(`    Initiated: ${sprint.initiated || 'unknown'}`);
-    console.log(`    Last git:  ${sprint.last_git_activity || 'untracked'}`);
+    console.log(
+      `    Claims:   ${sprint.claims_count} total, ${sprint.active_claims} active`,
+    );
+    console.log(`    Initiated: ${sprint.initiated || "unknown"}`);
+    console.log(`    Last git:  ${sprint.last_git_activity || "untracked"}`);
     console.log(`    Commits:   ${sprint.git_commit_count}`);
-    console.log(`    Question:  ${sprint.question.slice(0, 80)}${sprint.question.length > 80 ? '...' : ''}`);
+    console.log(
+      `    Question:  ${sprint.question.slice(0, 80)}${sprint.question.length > 80 ? "..." : ""}`,
+    );
     console.log();
   }
 
   if (result.active) {
     console.log(`Active sprint: ${result.active.path} (${result.active.name})`);
   } else {
-    console.log('No active sprint detected.');
+    console.log("No active sprint detected.");
   }
 }

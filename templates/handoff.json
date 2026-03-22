@@ -9,9 +9,7 @@
     { "name": "static-site", "format": "html" },
     { "name": "markdown-outline", "format": "md" }
   ],
-  "seedPacks": [
-    "migration"
-  ],
+  "seedPacks": ["migration"],
   "scaffoldConfig": {
     "defaultPlaceholders": {
       "TITLE": "Sprint Handoff",

@@ -8,9 +8,7 @@
     { "name": "pdf", "format": "pdf" },
     { "name": "static-site", "format": "html" }
   ],
-  "seedPacks": [
-    "compliance"
-  ],
+  "seedPacks": ["compliance"],
   "scaffoldConfig": {
     "defaultPlaceholders": {
       "TITLE": "Evidence Matrix",

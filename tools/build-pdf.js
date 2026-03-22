@@ -10,12 +10,12 @@
  * Zero npm dependencies (Node built-in only).
  */
 
-import { existsSync } from 'node:fs';
-import { execSync } from 'node:child_process';
+import { existsSync } from "node:fs";
+import { execSync } from "node:child_process";
 
 const target = process.argv[2];
 
-if (!target || target === '--help' || target === '-h') {
+if (!target || target === "--help" || target === "-h") {
   console.log(`build-pdf — convert markdown to PDF
 
 Usage:
@@ -34,10 +34,10 @@ if (!existsSync(target)) {
 }
 
 try {
-  execSync(`npx md-to-pdf "${target}"`, { stdio: 'inherit' });
-  const pdfPath = target.replace(/\.md$/, '.pdf');
+  execSync(`npx md-to-pdf "${target}"`, { stdio: "inherit" });
+  const pdfPath = target.replace(/\.md$/, ".pdf");
   console.log(`PDF generated: ${pdfPath}`);
 } catch (e) {
-  console.error('PDF generation failed:', e.message);
+  console.error("PDF generation failed:", e.message);
   process.exit(1);
 }

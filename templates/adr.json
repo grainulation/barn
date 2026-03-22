@@ -9,9 +9,7 @@
     { "name": "static-site", "format": "html" },
     { "name": "markdown-outline", "format": "md" }
   ],
-  "seedPacks": [
-    "architecture"
-  ],
+  "seedPacks": ["architecture"],
   "scaffoldConfig": {
     "defaultPlaceholders": {
       "ADR_NUMBER": "000",

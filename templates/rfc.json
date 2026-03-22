@@ -9,10 +9,7 @@
     { "name": "static-site", "format": "html" },
     { "name": "markdown-outline", "format": "md" }
   ],
-  "seedPacks": [
-    "architecture",
-    "api-design"
-  ],
+  "seedPacks": ["architecture", "api-design"],
   "scaffoldConfig": {
     "defaultPlaceholders": {
       "RFC_NUMBER": "000",

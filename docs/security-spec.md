@@ -14,13 +14,13 @@ Claim content is free-form text authored by humans and LLMs. It may contain char
 
 ### Required escapes
 
-| Character | Escape     | Why                                    |
-|-----------|------------|----------------------------------------|
-| `<`       | `&lt;`     | Prevents tag injection                 |
-| `>`       | `&gt;`     | Closes injected tags                   |
-| `&`       | `&amp;`    | Prevents entity injection              |
-| `"`       | `&quot;`   | Prevents attribute breakout            |
-| `'`       | `&#x27;`   | Prevents attribute breakout (single)   |
+| Character | Escape   | Why                                  |
+| --------- | -------- | ------------------------------------ |
+| `<`       | `&lt;`   | Prevents tag injection               |
+| `>`       | `&gt;`   | Closes injected tags                 |
+| `&`       | `&amp;`  | Prevents entity injection            |
+| `"`       | `&quot;` | Prevents attribute breakout          |
+| `'`       | `&#x27;` | Prevents attribute breakout (single) |
 
 ### Reference implementation
 
@@ -29,11 +29,11 @@ Every tool should use this pattern (or equivalent) when rendering claim content:
 ```javascript
 function escapeHTML(str) {
   return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
 }
 ```
 
@@ -106,9 +106,9 @@ npx @grainulation/barn serve --cors "*"
 
 ```javascript
 if (corsOrigin) {
-  res.setHeader('Access-Control-Allow-Origin', corsOrigin);
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader("Access-Control-Allow-Origin", corsOrigin);
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 }
 ```
 
@@ -165,6 +165,7 @@ Wheat, barn, mill, silo, harvest, orchard, and grainulation bind to `127.0.0.1` 
 ### When to add auth to other tools
 
 Auth should be added to a tool if:
+
 - It binds to `0.0.0.0` (network-accessible)
 - It modifies state (writes files, changes configuration)
 - It is deployed to a shared server
@@ -180,6 +181,7 @@ All tools run locally. Rate limiting local requests adds complexity without secu
 ### When to add rate limiting
 
 Add rate limiting when:
+
 - A tool is exposed to the network (binds to `0.0.0.0`)
 - A tool accepts POST requests that trigger expensive operations (compilation, export)
 - A tool is deployed as a shared service
@@ -207,6 +209,6 @@ function rateLimit(ip) {
 
 ## Changelog
 
-| Date       | Change                    |
-|------------|---------------------------|
+| Date       | Change                             |
+| ---------- | ---------------------------------- |
 | 2026-03-15 | Initial spec (addresses r042/r059) |

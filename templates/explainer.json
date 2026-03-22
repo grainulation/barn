@@ -9,10 +9,7 @@
     { "name": "static-site", "format": "html" },
     { "name": "markdown-outline", "format": "md" }
   ],
-  "seedPacks": [
-    "research-findings",
-    "evidence-tiers"
-  ],
+  "seedPacks": ["research-findings", "evidence-tiers"],
   "scaffoldConfig": {
     "defaultPlaceholders": {
       "TITLE": "Research Explainer",

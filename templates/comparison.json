@@ -8,9 +8,7 @@
     { "name": "pdf-landscape", "format": "pdf" },
     { "name": "static-site", "format": "html" }
   ],
-  "seedPacks": [
-    "architecture"
-  ],
+  "seedPacks": ["architecture"],
   "scaffoldConfig": {
     "defaultPlaceholders": {
       "TITLE": "Option Comparison",

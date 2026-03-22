@@ -4,9 +4,7 @@
   "tags": ["email", "digest", "update", "async", "communication"],
   "author": "grainulation",
   "version": "1.0.0",
-  "exportPresets": [
-    { "name": "static-site", "format": "html" }
-  ],
+  "exportPresets": [{ "name": "static-site", "format": "html" }],
   "seedPacks": [],
   "scaffoldConfig": {
     "defaultPlaceholders": {

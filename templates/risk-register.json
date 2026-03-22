@@ -8,10 +8,7 @@
     { "name": "pdf-landscape", "format": "pdf" },
     { "name": "static-site", "format": "html" }
   ],
-  "seedPacks": [
-    "security",
-    "compliance"
-  ],
+  "seedPacks": ["security", "compliance"],
   "scaffoldConfig": {
     "defaultPlaceholders": {
       "TITLE": "Risk Register",

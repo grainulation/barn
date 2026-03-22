@@ -1,7 +1,13 @@
 {
   "title": "Certificate",
   "description": "Compilation certificate rendered as a formal visual artifact. Shows hash, claim count, evidence breakdown, and conflict status with a centered, framed layout.",
-  "tags": ["certificate", "compilation", "verification", "reproducible", "hash"],
+  "tags": [
+    "certificate",
+    "compilation",
+    "verification",
+    "reproducible",
+    "hash"
+  ],
   "author": "grainulation",
   "version": "1.0.0",
   "exportPresets": [

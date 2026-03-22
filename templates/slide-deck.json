@@ -8,9 +8,7 @@
     { "name": "pdf", "format": "pdf" },
     { "name": "static-site", "format": "html" }
   ],
-  "seedPacks": [
-    "architecture"
-  ],
+  "seedPacks": ["architecture"],
   "scaffoldConfig": {
     "defaultPlaceholders": {
       "TITLE": "Sprint Presentation",

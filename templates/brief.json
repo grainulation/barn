@@ -9,10 +9,7 @@
     { "name": "static-site", "format": "html" },
     { "name": "markdown-outline", "format": "md" }
   ],
-  "seedPacks": [
-    "architecture",
-    "compliance"
-  ],
+  "seedPacks": ["architecture", "compliance"],
   "scaffoldConfig": {
     "defaultPlaceholders": {
       "TITLE": "Decision Brief",

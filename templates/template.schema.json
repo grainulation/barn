@@ -2,14 +2,30 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
-    "title": { "type": "string", "description": "Display name for the template" },
-    "description": { "type": "string", "description": "What this template is for" },
-    "tags": { "type": "array", "items": { "type": "string" }, "description": "Searchable tags" },
+    "title": {
+      "type": "string",
+      "description": "Display name for the template"
+    },
+    "description": {
+      "type": "string",
+      "description": "What this template is for"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Searchable tags"
+    },
     "author": { "type": "string" },
     "version": { "type": "string", "description": "Semver version" },
     "exportPresets": {
       "type": "array",
-      "items": { "type": "object", "properties": { "name": { "type": "string" }, "format": { "type": "string" } } },
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "format": { "type": "string" }
+        }
+      },
       "description": "Mill export presets — defines how this template can be exported (consumed by mill)"
     },
     "seedPacks": {

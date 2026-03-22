@@ -52,25 +52,25 @@ barn build-pdf <file.md>
 
 ## CLI flags
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--port` | `9093` | HTTP server port |
-| `--root` | `cwd` | Repository root path |
-| `--cors` | none | Allowed CORS origin |
-| `--verbose`, `-v` | off | Log to stderr with timestamps |
+| Flag              | Default | Description                   |
+| ----------------- | ------- | ----------------------------- |
+| `--port`          | `9093`  | HTTP server port              |
+| `--root`          | `cwd`   | Repository root path          |
+| `--cors`          | none    | Allowed CORS origin           |
+| `--verbose`, `-v` | off     | Log to stderr with timestamps |
 
 ## API endpoints
 
 All endpoints are served by `barn serve`.
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/events` | SSE event stream for live updates |
-| GET | `/api/state` | Current state (templates, sprints, manifest) |
-| GET | `/api/template?name=<name>` | Template content by name |
-| GET | `/api/search?q=<query>` | Search templates by name, description, placeholders, features |
-| POST | `/api/refresh` | Refresh state from disk |
-| GET | `/api/docs` | API documentation page |
+| Method | Path                        | Description                                                   |
+| ------ | --------------------------- | ------------------------------------------------------------- |
+| GET    | `/events`                   | SSE event stream for live updates                             |
+| GET    | `/api/state`                | Current state (templates, sprints, manifest)                  |
+| GET    | `/api/template?name=<name>` | Template content by name                                      |
+| GET    | `/api/search?q=<query>`     | Search templates by name, description, placeholders, features |
+| POST   | `/api/refresh`              | Refresh state from disk                                       |
+| GET    | `/api/docs`                 | API documentation page                                        |
 
 ## Template metadata
 
@@ -99,13 +99,13 @@ All fields are optional. Auto-detected features (CSS grid, charts, cards, slides
 Barn hosts the shared design token stylesheet for the grainulation ecosystem. Import it in any HTML template:
 
 ```html
-<link rel="stylesheet" href="grainulation-tokens.css">
+<link rel="stylesheet" href="grainulation-tokens.css" />
 ```
 
 Activate a tool-specific accent scale with the `data-tool` attribute:
 
 ```html
-<html data-tool="wheat">
+<html data-tool="wheat"></html>
 ```
 
 Three-layer token architecture:

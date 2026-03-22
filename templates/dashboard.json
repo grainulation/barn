@@ -8,10 +8,7 @@
     { "name": "pdf-landscape", "format": "pdf" },
     { "name": "static-site", "format": "html" }
   ],
-  "seedPacks": [
-    "sprint-metrics",
-    "claim-summaries"
-  ],
+  "seedPacks": ["sprint-metrics", "claim-summaries"],
   "scaffoldConfig": {
     "defaultPlaceholders": {
       "TITLE": "Sprint Dashboard",
