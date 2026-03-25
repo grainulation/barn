@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@grainulation/barn"><img src="https://img.shields.io/npm/v/@grainulation/barn" alt="npm version"></a> <a href="https://www.npmjs.com/package/@grainulation/barn"><img src="https://img.shields.io/npm/dm/@grainulation/barn" alt="npm downloads"></a> <a href="https://github.com/grainulation/barn/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="license"></a> <a href="https://nodejs.org"><img src="https://img.shields.io/node/v/@grainulation/barn" alt="node"></a> <a href="https://github.com/grainulation/barn/actions"><img src="https://github.com/grainulation/barn/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/@grainulation/barn"><img src="https://img.shields.io/npm/v/@grainulation/barn?label=%40grainulation%2Fbarn" alt="npm version"></a> <a href="https://www.npmjs.com/package/@grainulation/barn"><img src="https://img.shields.io/npm/dm/@grainulation/barn" alt="npm downloads"></a> <a href="https://github.com/grainulation/barn/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="license"></a> <a href="https://nodejs.org"><img src="https://img.shields.io/node/v/@grainulation/barn" alt="node"></a> <a href="https://github.com/grainulation/barn/actions"><img src="https://github.com/grainulation/barn/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://deepwiki.com/grainulation/barn"><img src="https://deepwiki.com/badge.svg" alt="Explore on DeepWiki"></a>
 </p>
 
