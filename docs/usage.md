@@ -14,7 +14,7 @@ Or run without installing:
 npx @grainulation/barn <command>
 ```
 
-Requires Node 18+.
+Requires Node 20+.
 
 ## Commands
 
