@@ -82,8 +82,7 @@ Options:
   --version, -v   Print version and exit
   --verbose        Enable verbose logging to stderr
 
-Zero npm dependencies. Node built-in only.
-https://github.com/grainulation/barn`);
+Zero npm dependencies. Node built-in only.`);
   process.exit(0);
 }
 
