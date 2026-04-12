@@ -37,7 +37,9 @@
   "files": [
     "bin/",
     "lib/",
-    "public/",
+    "public/grainulation-tokens.css",
+    "public/status-icons.svg",
+    "public/grainulation-icons.svg",
     "tools/",
     "templates/",
     "CHANGELOG.md",
