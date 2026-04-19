@@ -1,0 +1,170 @@
+name: Contract Test
+
+# Verify that proposed barn changes do not break any of its published
+# consumers. For every barn PR (and every push to main), install each
+# dependent at its last-published version, override its barn with the
+# PR tarball, and run the dependent's test suite.
+#
+# barn 1.x contract: no existing export is ever removed. This workflow
+# is the enforcement layer for that contract.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: contract-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pack:
+    name: Pack PR tarball
+    runs-on: ubuntu-latest
+    outputs:
+      tarball: ${{ steps.pack.outputs.tarball }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install barn
+        run: npm ci
+      - name: Pack barn tarball
+        id: pack
+        run: |
+          file=$(npm pack --silent)
+          echo "Packed: $file"
+          mkdir -p "$RUNNER_TEMP/barn-tarball"
+          mv "$file" "$RUNNER_TEMP/barn-tarball/barn-pr.tgz"
+          echo "tarball=barn-pr.tgz" >> "$GITHUB_OUTPUT"
+      - name: Upload tarball artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: barn-pr-tarball
+          path: ${{ runner.temp }}/barn-tarball/barn-pr.tgz
+          retention-days: 1
+          if-no-files-found: error
+
+  consumers:
+    name: ${{ matrix.dep.name }}
+    needs: pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        dep:
+          - name: wheat
+            pkg: "@grainulation/wheat"
+            env: ""
+          - name: farmer
+            pkg: "@grainulation/farmer"
+            env: ""
+          - name: mill
+            pkg: "@grainulation/mill"
+            env: ""
+          - name: silo
+            pkg: "@grainulation/silo"
+            # silo has opt-in live-network tests gated on FETCH_LIVE=1.
+            # Force it off so the matrix never hits the network.
+            env: "FETCH_LIVE=0"
+          - name: harvest
+            pkg: "@grainulation/harvest"
+            env: ""
+          - name: orchard
+            pkg: "@grainulation/orchard"
+            env: ""
+          # grainulation (umbrella) is excluded — it has no direct barn
+          # dependency, so breaking barn cannot break it through the
+          # dependency graph.
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Download PR tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: barn-pr-tarball
+          path: ${{ runner.temp }}/barn-tarball
+
+      - name: Verify dependent is published
+        id: check-published
+        run: |
+          if npm view "${{ matrix.dep.pkg }}" version > /dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            version=$(npm view "${{ matrix.dep.pkg }}" version)
+            echo "version=$version" >> "$GITHUB_OUTPUT"
+            echo "${{ matrix.dep.pkg }} is published at $version"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::${{ matrix.dep.pkg }} not published to registry — skipping"
+          fi
+
+      - name: Install dependent at latest
+        if: steps.check-published.outputs.published == 'true'
+        working-directory: ${{ runner.temp }}
+        run: |
+          mkdir -p consumer-${{ matrix.dep.name }}
+          cd consumer-${{ matrix.dep.name }}
+          npm init -y > /dev/null
+          npm install "${{ matrix.dep.pkg }}@latest" \
+            --no-audit --no-fund --ignore-scripts
+
+      - name: Override barn with PR tarball
+        if: steps.check-published.outputs.published == 'true'
+        working-directory: ${{ runner.temp }}/consumer-${{ matrix.dep.name }}
+        run: |
+          npm install "$RUNNER_TEMP/barn-tarball/barn-pr.tgz" \
+            --no-audit --no-fund --ignore-scripts
+          installed=$(node -p "require('@grainulation/barn/package.json').version")
+          echo "Installed barn version (from PR tarball): $installed"
+
+      - name: Run dependent test suite
+        if: steps.check-published.outputs.published == 'true'
+        id: test
+        working-directory: ${{ runner.temp }}/consumer-${{ matrix.dep.name }}/node_modules/${{ matrix.dep.pkg }}
+        run: |
+          set -o pipefail
+          # Install the dependent's own dev deps (if any) so it can run its tests.
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+          else
+            npm install --no-audit --no-fund
+          fi
+          # Re-apply the PR barn after the dependent's install, in case
+          # its install resolved barn back to the registry version.
+          npm install "$RUNNER_TEMP/barn-tarball/barn-pr.tgz" \
+            --no-audit --no-fund --ignore-scripts
+          # Run tests with any per-dependent env overrides from the matrix.
+          env ${{ matrix.dep.env }} npm test 2>&1 | tee test-output.log
+
+      - name: Triage snippet on failure
+        if: failure() && steps.test.conclusion == 'failure'
+        working-directory: ${{ runner.temp }}/consumer-${{ matrix.dep.name }}/node_modules/${{ matrix.dep.pkg }}
+        run: |
+          {
+            echo "### ${{ matrix.dep.name }} failed against PR barn"
+            echo ""
+            echo "Dependent: \`${{ matrix.dep.pkg }}@${{ steps.check-published.outputs.version }}\`"
+            echo ""
+            echo "First 50 lines of test output:"
+            echo ""
+            echo '```'
+            head -n 50 test-output.log || echo "(no test output captured)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Record pass on summary
+        if: success() && steps.check-published.outputs.published == 'true'
+        run: |
+          echo "- PASS: ${{ matrix.dep.name }} (${{ matrix.dep.pkg }}@${{ steps.check-published.outputs.version }})" \
+            >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Record skip on summary
+        if: steps.check-published.outputs.published != 'true'
+        run: |
+          echo "- SKIP: ${{ matrix.dep.name }} (${{ matrix.dep.pkg }} not published)" \
+            >> "$GITHUB_STEP_SUMMARY"
