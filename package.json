@@ -1,6 +1,6 @@
 {
   "name": "@grainulation/barn",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Template browser and sprint toolkit for the grainulation ecosystem",
   "license": "MIT",
   "author": "grainulation contributors",
@@ -28,6 +28,12 @@
     "./detect-sprints": "./tools/detect-sprints.js",
     "./generate-manifest": "./tools/generate-manifest.js",
     "./build-pdf": "./tools/build-pdf.js",
+    "./mcp": "./lib/mcp.js",
+    "./paths": "./lib/paths.js",
+    "./atomic": "./lib/atomic.js",
+    "./cli": "./lib/cli.js",
+    "./phases": "./lib/phases.js",
+    "./sprints": "./lib/sprints.js",
     "./tokens": "./public/grainulation-tokens.css",
     "./status-icons": "./public/status-icons.svg"
   },
@@ -50,7 +56,7 @@
   "scripts": {
     "start": "node bin/barn.js serve",
     "serve": "node bin/barn.js serve",
-    "test": "node test/basic.test.js"
+    "test": "node test/basic.test.js && node --test test/shared-utils.test.js"
   },
   "engines": {
     "node": ">=20"
