@@ -32,6 +32,10 @@
       "import": "./lib/mcp.js",
       "require": "./lib/mcp.cjs"
     },
+    "./mcp-crash": {
+      "import": "./lib/mcp-crash.js",
+      "require": "./lib/mcp-crash.cjs"
+    },
     "./paths": {
       "import": "./lib/paths.js",
       "require": "./lib/paths.cjs"
@@ -73,7 +77,7 @@
   "scripts": {
     "start": "node bin/barn.js serve",
     "serve": "node bin/barn.js serve",
-    "test": "node test/basic.test.js && node --test test/shared-utils.test.js test/server.test.js test/ui-smoke.test.js",
+    "test": "node test/basic.test.js && node --test test/shared-utils.test.js test/server.test.js test/ui-smoke.test.js test/mcp-crash.test.js",
     "format": "npx prettier@3.3 --write .",
     "format:check": "npx prettier@3.3 --check ."
   },

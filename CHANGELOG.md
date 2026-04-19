@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.2.2 (unreleased)
+
+Shared MCP crash-safety helper — the battle-tested `uncaughtException` /
+`unhandledRejection` pattern from `wheat/lib/serve-mcp.js` extracted into
+barn so wheat / mill / silo / farmer MCP servers can all use one canonical
+implementation.
+
+- `@grainulation/barn/mcp-crash` — new export. Provides
+  `installCrashHandlers({ service, version, onExit, stderr, exit })` which
+  registers `uncaughtException` + `unhandledRejection` listeners that emit
+  a structured JSON payload to stderr (per MCP 2024-11-05 stdio spec,
+  stdout is reserved for JSON-RPC framing), run an optional synchronous
+  cleanup hook, and `process.exit(1)` so parent plugin hosts see a clean
+  EOF and surface a reload prompt. Recursive-crash fallback exits 2.
+  `BARN_MCP_CRASH_TEST=uncaught|unhandled` env hook lets consumers write
+  real end-to-end crash tests without monkey-patching `process`. Ships
+  both ESM (`lib/mcp-crash.js`) and CJS (`lib/mcp-crash.cjs`) entry points.
+
+Still zero runtime dependencies.
+
 ## 1.2.1
 
 Follow-up bundle for the dedup cascade — absorbs two more pieces of
