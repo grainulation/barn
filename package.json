@@ -24,6 +24,7 @@
   "main": "./lib/index.js",
   "exports": {
     ".": "./lib/index.js",
+    "./package.json": "./package.json",
     "./server": "./lib/server.js",
     "./detect-sprints": "./tools/detect-sprints.js",
     "./generate-manifest": "./tools/generate-manifest.js",
