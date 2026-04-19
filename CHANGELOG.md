@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.2 (unreleased)
+## 1.2.2 — 2026-04-19
 
 Shared MCP crash-safety helper — the battle-tested `uncaughtException` /
 `unhandledRejection` pattern from `wheat/lib/serve-mcp.js` extracted into
