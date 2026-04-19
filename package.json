@@ -61,15 +61,14 @@
   "files": [
     "bin/",
     "lib/",
-    "public/grainulation-tokens.css",
-    "public/status-icons.svg",
-    "public/grainulation-icons.svg",
+    "public/",
     "tools/",
     "templates/",
     "CHANGELOG.md",
     "LICENSE",
     "CODE_OF_CONDUCT.md",
-    "CONTRIBUTING.md"
+    "CONTRIBUTING.md",
+    "SECURITY.md"
   ],
   "scripts": {
     "start": "node bin/barn.js serve",
