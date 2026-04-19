@@ -1,5 +1,51 @@
 # Changelog
 
+## 1.3.0 — 2026-04-19
+
+Shared SEO / print primitives + vendor-at-build mechanism. Unblocks the
+eight per-site SEO adoption sprints (seo-barn, seo-wheat, seo-mill, …) by
+giving every consumer one canonical place to pull shared assets from,
+with zero CSP loosening.
+
+- `@grainulation/barn/print-css` — new export. Canonical print
+  stylesheet (`public/grainulation-print.css`) for every grainulation
+  site. Hides nav + ambient animations + copy buttons, reflows to full
+  page width, renders black-on-white serif, expands external URLs via
+  `a[href]::after`, enforces `page-break-inside: avoid` on cards and
+  major sections, reveals collapsed FAQ panels, drops sticky/fixed
+  positioning. Safe to ship alongside an existing on-screen stylesheet —
+  scoped under `@media print` only.
+- `@grainulation/barn/llms-txt-template` — new export. Template for
+  per-site `/llms.txt` (LLM discoverability per llmstxt.org). Contains
+  `{{SITE_NAME}}`, `{{QUOTABLE_ONE_LINER}}`, `{{OVERVIEW}}`, `{{REPO}}`,
+  `{{SITE_URL}}`, `{{SIBLING_LINKS}}` placeholders. Follows the
+  llmstxt.org spec exactly: H1 title, blockquote summary, descriptive
+  paragraphs, H2-delimited link lists, Optional section. Each site
+  creates its concrete `llms.txt` from this once; the template is NOT
+  auto-synced (prevents overwriting site-specific content).
+- `@grainulation/barn/sync-assets` — new CLI (`barn sync-assets --target
+  <dir>`) and ESM export. Zero-dep vendor-at-build mechanism using only
+  `node:fs`, `node:crypto`, `node:path`. Copies shared primitives (print
+  CSS, tokens CSS, status-icons SVG) from `barn/public/` into a
+  consumer's `site/` dir. Idempotent: sha256-hash equality means the
+  copy is skipped. `--strict` flag exits non-zero on any drift instead
+  of overwriting, useful in CI. `--dry-run` and `--verbose` flags
+  supported. Wired into `bin/barn.js` dispatcher so `npx
+  @grainulation/barn sync-assets` works.
+- `barn/docs/sync-assets.md` — documents the vendor-at-build pattern
+  rationale (CSP gate), the consumer integration recipe for
+  `pages.yml`, and the procedure for registering new shared primitives.
+- Canary applied to barn's own site: inline-SVG favicon replaced with
+  `<link rel="icon" href="/apple-touch-icon.png" type="image/png"
+  sizes="180x180">`, meta description trimmed from 187 → 158 chars,
+  `<link rel="stylesheet" media="print" href="/grainulation-print.css">`
+  added, `site/llms.txt` created from the new template,
+  `.github/workflows/pages.yml` now runs `node tools/sync-assets.js
+  --target ./site` before deploy.
+
+No breaking changes. Existing exports, CLI subcommands, and bin entries
+are untouched. Still zero runtime dependencies.
+
 ## 1.2.2 — 2026-04-19
 
 Shared MCP crash-safety helper — the battle-tested `uncaughtException` /

@@ -49,6 +49,7 @@ const commands = {
   "detect-sprints": "detect-sprints.js",
   "generate-manifest": "generate-manifest.js",
   "build-pdf": "build-pdf.js",
+  "sync-assets": "sync-assets.js",
 };
 
 vlog("startup", `command=${command || "(none)"}`, `cwd=${process.cwd()}`);
@@ -65,11 +66,12 @@ Usage:
   barn <command> [options]
 
 Commands:
-  serve               Start the template browser UI
-  detect-sprints      Find sprint directories in a repo
-  generate-manifest   Build wheat-manifest.json topic map
-  build-pdf <file>    Convert markdown to PDF via npx md-to-pdf
-  help                Show this help message
+  serve                        Start the template browser UI
+  detect-sprints               Find sprint directories in a repo
+  generate-manifest            Build wheat-manifest.json topic map
+  build-pdf <file>             Convert markdown to PDF via npx md-to-pdf
+  sync-assets --target <dir>   Vendor shared SEO/print primitives into a site/
+  help                         Show this help message
 
 Examples:
   barn serve --port 9093 --root /path/to/repo
@@ -77,6 +79,7 @@ Examples:
   barn detect-sprints --active
   barn generate-manifest --root /path/to/repo
   barn build-pdf output/brief.md
+  barn sync-assets --target ./site
 
 Options:
   --version, -v   Print version and exit
