@@ -50,6 +50,7 @@ const commands = {
   "generate-manifest": "generate-manifest.js",
   "build-pdf": "build-pdf.js",
   "sync-assets": "sync-assets.js",
+  "llms-txt-lint": "seo/llms-txt-lint.js",
 };
 
 vlog("startup", `command=${command || "(none)"}`, `cwd=${process.cwd()}`);
@@ -71,6 +72,7 @@ Commands:
   generate-manifest            Build wheat-manifest.json topic map
   build-pdf <file>             Convert markdown to PDF via npx md-to-pdf
   sync-assets --target <dir>   Vendor shared SEO/print primitives into a site/
+  llms-txt-lint                Cross-link lint ecosystem llms.txt files
   help                         Show this help message
 
 Examples:
@@ -80,6 +82,7 @@ Examples:
   barn generate-manifest --root /path/to/repo
   barn build-pdf output/brief.md
   barn sync-assets --target ./site
+  barn llms-txt-lint
 
 Options:
   --version, -v   Print version and exit

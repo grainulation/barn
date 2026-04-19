@@ -1,5 +1,47 @@
 # Changelog
 
+## 1.3.1 — 2026-04-19
+
+Patch: closes the five per-site print blindspots surfaced by the Phase 3
+agents (farmer, harvest, orchard, mill, wheat) in the shared
+`grainulation-print.css`, and adds a zero-dep cross-link linter for the
+ecosystem's `site/llms.txt` discoverability graph. Additive only — no
+breaking changes.
+
+- `public/grainulation-print.css` — additive site-specific rule groups:
+  - **farmer**: inline `style="color:#fff"` on branded `<strong>` wordmarks
+    was invisible on white paper. Now force-blackened via attribute selector
+    (handles `#fff` + `#FFFFFF`, with and without post-colon space).
+  - **harvest**: `.bar`, `.bar-group`, `.accuracy-chart` now set
+    `print-color-adjust: exact` (plus `-webkit-` and pre-spec `color-adjust`
+    fallback) so chart bars retain color at print.
+  - **orchard**: `.dep-graph`, `.dep-node`, `.node-box` forced to
+    transparent background + neutral border + black text; dark-theme CSS
+    variables were washing out on white.
+  - **mill**: `.term-timeline`, `.term-step`, `.term-cmd`, `.term-dot`,
+    `.term-output` now flatten cleanly; `.before-after` collapses to a
+    single column to mirror the on-screen mobile rule.
+  - **wheat**: `.copy-wrap::before` traffic-light chrome (32 px decorative
+    pseudo-element) hidden in print.
+  - Header comment expanded to document the per-site `print-local.css`
+    override convention; existing rules untouched.
+- `@grainulation/barn/llms-txt-lint` — new export + `barn llms-txt-lint`
+  CLI subcommand. Zero-dep cross-link linter for ecosystem `site/llms.txt`
+  files. Auto-discovers siblings at `../<repo>/site/llms.txt` (override
+  with `--root`), parses the markdown structure (H1, blockquote,
+  per-section link lists), and flags four issue kinds: **missing-sibling**
+  (ecosystem list omits a known sibling), **h1-drift** (H1 disagrees with
+  `package.json` name), **description-drift** (same sibling described
+  differently across the 8 files, word-overlap threshold), and
+  **unfilled** placeholder bleed-through (e.g. a stray `{{SIBLING_LINKS}}`).
+  Report-only — never edits any llms.txt file. Markdown to stdout by
+  default, `--json` for CI, `--quiet` for summary-only.
+- `docs/sync-assets.md` — expanded "Overriding a shared primitive per-site"
+  guidance so consumers know when to reach for `print-local.css` vs. when
+  to PR upstream to barn.
+
+No breaking changes. Still zero runtime dependencies.
+
 ## 1.3.0 — 2026-04-19
 
 Shared SEO / print primitives + vendor-at-build mechanism. Unblocks the

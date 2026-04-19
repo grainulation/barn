@@ -119,6 +119,32 @@ Higher source-order wins on equal specificity. `print-local.css` is NOT
 vendored — it's site-owned. Do not fork `grainulation-print.css` — if you
 need an upstream fix, send a PR to barn instead.
 
+### When to PR upstream vs. ship print-local.css
+
+| Case                                                              | Where it lives                   |
+|-------------------------------------------------------------------|----------------------------------|
+| Rule benefits every site (e.g., hide a nav pattern all sites use) | upstream in `grainulation-print.css` (PR to barn) |
+| Rule is specific to ONE site (niche widget, brand wordmark)       | site-local `print-local.css`     |
+| Rule is specific to 2-3 sites with the same DOM class             | upstream; barn owns cross-site   |
+| Emergency fix before a stakeholder print                          | site-local first, upstream PR as follow-up |
+
+### Known per-site hardening (absorbed in 1.3.1)
+
+The following blindspots were fixed upstream in `grainulation-print.css` and
+therefore do NOT need `print-local.css` in the consumer repos:
+
+| Site    | Hardening applied in 1.3.1                                           |
+|---------|----------------------------------------------------------------------|
+| farmer  | inline `style="color:#fff"` wordmarks forced to `#000` at print      |
+| harvest | `.bar`, `.accuracy-chart` get `print-color-adjust: exact`            |
+| orchard | `.dep-graph` / `.dep-node` / `.node-box` contrast overrides          |
+| mill    | `.term-*` blocks flattened; `.before-after` collapses to one column  |
+| wheat   | `.copy-wrap::before` traffic-light pseudo-element hidden             |
+
+If you see a regression in one of these areas, first check that your site
+has pulled `@grainulation/barn@^1.3.1` via `sync-assets`. If it has and the
+bug persists, PR a fix to barn rather than adding a `print-local.css`.
+
 ## Failure modes
 
 | Symptom                                    | Cause                                              | Fix                                  |
