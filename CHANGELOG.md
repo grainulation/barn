@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.2.1
+
+Follow-up bundle for the dedup cascade — absorbs two more pieces of
+logic that wheat/harvest/orchard had been duplicating, so every
+consumer has one source of truth.
+
+- `@grainulation/barn/detect-sprints` — canonical version of the
+  git-aware active-sprint picker (438 LOC). Supersedes the simpler
+  standalone loader that was previously at `tools/detect-sprints.js`
+  (316 LOC); the new version adds `findSprintRoots` + `analyzeSprint`
+  exports, batch git queries for dates/counts (~30× faster on
+  ≥10 sprints), and ranks by non-archived first, then most-recent
+  git activity, then initiated date. Wheat's local copy of this
+  module is deleted in a follow-up consumer commit.
+- `@grainulation/barn/sprints` — new `findSprintFiles(targetDir)`
+  export. Two-level-deep scan for claims.json files, returning
+  `{ file, dir, name, cat }` where `cat ∈ { root, archive, active }`.
+  harvest and orchard each had a near-identical ~65 LOC
+  implementation in their respective dashboard.js files; those are
+  deleted in a follow-up consumer commit. Available in both the
+  ESM (`lib/sprints.js`) and CJS (`lib/sprints.cjs`) entry points.
+
+Still zero runtime dependencies.
+
 ## 1.2.0
 
 Absorb shared utilities previously duplicated across wheat / mill / silo /

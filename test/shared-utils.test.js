@@ -52,6 +52,7 @@ import {
   loadSprintCompilation,
   sprintSummary,
   summarize,
+  findSprintFiles,
 } from "../lib/sprints.js";
 
 // ── MCP helpers ────────────────────────────────────────────────────────────
@@ -485,5 +486,32 @@ describe("sprint helpers", () => {
     const results = summarize([join(dir, "sprint1"), join(dir, "no-such")]);
     assert.equal(results.length, 1);
     assert.equal(results[0].question, "Q1");
+  });
+
+  it("findSprintFiles scans two levels deep and returns {file, dir, name, cat}", () => {
+    const found = findSprintFiles(dir);
+    // sprint1 is a direct child → active
+    const active = found.find((f) => f.name === "sprint1");
+    assert.ok(active, "sprint1 should be discovered");
+    assert.equal(active.cat, "active");
+    assert.ok(active.file.endsWith("claims.json"));
+    assert.equal(active.dir, join(dir, "sprint1"));
+    // Hidden dirs, node_modules, and archive are not scanned as active
+    assert.ok(!found.some((f) => f.name.startsWith(".")));
+    assert.ok(!found.some((f) => f.name === "node_modules"));
+  });
+
+  it("findSprintFiles returns root category when claims.json is directly in targetDir", () => {
+    // Write a claims.json directly into the tempdir to simulate root-sprint layout
+    writeFileSync(
+      join(dir, "claims.json"),
+      JSON.stringify({ meta: { question: "Root" }, claims: [] }),
+    );
+    const found = findSprintFiles(dir);
+    const root = found.find((f) => f.cat === "root");
+    assert.ok(root, "root sprint should be discovered");
+    assert.equal(root.dir, dir);
+    // Clean up so subsequent reruns don't see it
+    rmSync(join(dir, "claims.json"), { force: true });
   });
 });
