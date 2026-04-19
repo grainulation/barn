@@ -57,23 +57,29 @@ jobs:
       matrix:
         dep:
           - name: wheat
+            repo: grainulation/wheat
             pkg: "@grainulation/wheat"
             env: ""
           - name: farmer
+            repo: grainulation/farmer
             pkg: "@grainulation/farmer"
             env: ""
           - name: mill
+            repo: grainulation/mill
             pkg: "@grainulation/mill"
             env: ""
           - name: silo
+            repo: grainulation/silo
             pkg: "@grainulation/silo"
             # silo has opt-in live-network tests gated on FETCH_LIVE=1.
             # Force it off so the matrix never hits the network.
             env: "FETCH_LIVE=0"
           - name: harvest
+            repo: grainulation/harvest
             pkg: "@grainulation/harvest"
             env: ""
           - name: orchard
+            repo: grainulation/orchard
             pkg: "@grainulation/orchard"
             env: ""
           # grainulation (umbrella) is excluded — it has no direct barn
@@ -90,32 +96,43 @@ jobs:
           name: barn-pr-tarball
           path: ${{ runner.temp }}/barn-tarball
 
-      - name: Verify dependent is published
-        id: check-published
+      - name: Resolve latest release tag
+        id: tag
         run: |
-          if npm view "${{ matrix.dep.pkg }}" version > /dev/null 2>&1; then
-            echo "published=true" >> "$GITHUB_OUTPUT"
-            version=$(npm view "${{ matrix.dep.pkg }}" version)
-            echo "version=$version" >> "$GITHUB_OUTPUT"
-            echo "${{ matrix.dep.pkg }} is published at $version"
-          else
+          # Read the latest published version from npm and use it to pick
+          # the matching git tag (repos use v<version> tagging convention).
+          if ! npm view "${{ matrix.dep.pkg }}" version > /dev/null 2>&1; then
             echo "published=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::${{ matrix.dep.pkg }} not published to registry — skipping"
+            echo "::notice::${{ matrix.dep.pkg }} not published — skipping"
+            exit 0
+          fi
+          version=$(npm view "${{ matrix.dep.pkg }}" version)
+          echo "published=true" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+          echo "${{ matrix.dep.pkg }} published at $version — will check out tag v$version"
+
+      - name: Check out dependent at release tag
+        if: steps.tag.outputs.published == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.dep.repo }}
+          ref: ${{ steps.tag.outputs.tag }}
+          path: consumer-${{ matrix.dep.name }}
+
+      - name: Install dependent's own deps
+        if: steps.tag.outputs.published == 'true'
+        working-directory: consumer-${{ matrix.dep.name }}
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+          else
+            npm install --no-audit --no-fund
           fi
 
-      - name: Install dependent at latest
-        if: steps.check-published.outputs.published == 'true'
-        working-directory: ${{ runner.temp }}
-        run: |
-          mkdir -p consumer-${{ matrix.dep.name }}
-          cd consumer-${{ matrix.dep.name }}
-          npm init -y > /dev/null
-          npm install "${{ matrix.dep.pkg }}@latest" \
-            --no-audit --no-fund --ignore-scripts
-
       - name: Override barn with PR tarball
-        if: steps.check-published.outputs.published == 'true'
-        working-directory: ${{ runner.temp }}/consumer-${{ matrix.dep.name }}
+        if: steps.tag.outputs.published == 'true'
+        working-directory: consumer-${{ matrix.dep.name }}
         run: |
           npm install "$RUNNER_TEMP/barn-tarball/barn-pr.tgz" \
             --no-audit --no-fund --ignore-scripts
@@ -123,32 +140,21 @@ jobs:
           echo "Installed barn version (from PR tarball): $installed"
 
       - name: Run dependent test suite
-        if: steps.check-published.outputs.published == 'true'
+        if: steps.tag.outputs.published == 'true'
         id: test
-        working-directory: ${{ runner.temp }}/consumer-${{ matrix.dep.name }}/node_modules/${{ matrix.dep.pkg }}
+        working-directory: consumer-${{ matrix.dep.name }}
         run: |
           set -o pipefail
-          # Install the dependent's own dev deps (if any) so it can run its tests.
-          if [ -f package-lock.json ]; then
-            npm ci --no-audit --no-fund || npm install --no-audit --no-fund
-          else
-            npm install --no-audit --no-fund
-          fi
-          # Re-apply the PR barn after the dependent's install, in case
-          # its install resolved barn back to the registry version.
-          npm install "$RUNNER_TEMP/barn-tarball/barn-pr.tgz" \
-            --no-audit --no-fund --ignore-scripts
-          # Run tests with any per-dependent env overrides from the matrix.
           env ${{ matrix.dep.env }} npm test 2>&1 | tee test-output.log
 
       - name: Triage snippet on failure
         if: failure() && steps.test.conclusion == 'failure'
-        working-directory: ${{ runner.temp }}/consumer-${{ matrix.dep.name }}/node_modules/${{ matrix.dep.pkg }}
+        working-directory: consumer-${{ matrix.dep.name }}
         run: |
           {
             echo "### ${{ matrix.dep.name }} failed against PR barn"
             echo ""
-            echo "Dependent: \`${{ matrix.dep.pkg }}@${{ steps.check-published.outputs.version }}\`"
+            echo "Dependent: \`${{ matrix.dep.pkg }}@${{ steps.tag.outputs.version }}\` (checked out at \`${{ steps.tag.outputs.tag }}\`)"
             echo ""
             echo "First 50 lines of test output:"
             echo ""
@@ -158,13 +164,13 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Record pass on summary
-        if: success() && steps.check-published.outputs.published == 'true'
+        if: success() && steps.tag.outputs.published == 'true'
         run: |
-          echo "- PASS: ${{ matrix.dep.name }} (${{ matrix.dep.pkg }}@${{ steps.check-published.outputs.version }})" \
+          echo "- PASS: ${{ matrix.dep.name }} (${{ matrix.dep.pkg }}@${{ steps.tag.outputs.version }})" \
             >> "$GITHUB_STEP_SUMMARY"
 
       - name: Record skip on summary
-        if: steps.check-published.outputs.published != 'true'
+        if: steps.tag.outputs.published != 'true'
         run: |
           echo "- SKIP: ${{ matrix.dep.name }} (${{ matrix.dep.pkg }} not published)" \
             >> "$GITHUB_STEP_SUMMARY"
