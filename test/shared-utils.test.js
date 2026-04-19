@@ -482,10 +482,7 @@ describe("sprint helpers", () => {
   });
 
   it("summarize drops missing sprints", () => {
-    const results = summarize([
-      join(dir, "sprint1"),
-      join(dir, "no-such"),
-    ]);
+    const results = summarize([join(dir, "sprint1"), join(dir, "no-such")]);
     assert.equal(results.length, 1);
     assert.equal(results[0].question, "Q1");
   });
