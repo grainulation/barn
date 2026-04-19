@@ -28,12 +28,30 @@
     "./detect-sprints": "./tools/detect-sprints.js",
     "./generate-manifest": "./tools/generate-manifest.js",
     "./build-pdf": "./tools/build-pdf.js",
-    "./mcp": { "import": "./lib/mcp.js", "require": "./lib/mcp.cjs" },
-    "./paths": { "import": "./lib/paths.js", "require": "./lib/paths.cjs" },
-    "./atomic": { "import": "./lib/atomic.js", "require": "./lib/atomic.cjs" },
-    "./cli": { "import": "./lib/cli.js", "require": "./lib/cli.cjs" },
-    "./phases": { "import": "./lib/phases.js", "require": "./lib/phases.cjs" },
-    "./sprints": { "import": "./lib/sprints.js", "require": "./lib/sprints.cjs" },
+    "./mcp": {
+      "import": "./lib/mcp.js",
+      "require": "./lib/mcp.cjs"
+    },
+    "./paths": {
+      "import": "./lib/paths.js",
+      "require": "./lib/paths.cjs"
+    },
+    "./atomic": {
+      "import": "./lib/atomic.js",
+      "require": "./lib/atomic.cjs"
+    },
+    "./cli": {
+      "import": "./lib/cli.js",
+      "require": "./lib/cli.cjs"
+    },
+    "./phases": {
+      "import": "./lib/phases.js",
+      "require": "./lib/phases.cjs"
+    },
+    "./sprints": {
+      "import": "./lib/sprints.js",
+      "require": "./lib/sprints.cjs"
+    },
     "./tokens": "./public/grainulation-tokens.css",
     "./status-icons": "./public/status-icons.svg"
   },
@@ -56,9 +74,12 @@
   "scripts": {
     "start": "node bin/barn.js serve",
     "serve": "node bin/barn.js serve",
-    "test": "node test/basic.test.js && node --test test/shared-utils.test.js"
+    "test": "node test/basic.test.js && node --test test/shared-utils.test.js test/server.test.js test/ui-smoke.test.js"
   },
   "engines": {
     "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
