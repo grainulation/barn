@@ -32,7 +32,13 @@
  */
 
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from "node:fs";
+import {
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  mkdirSync,
+  statSync,
+} from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -48,7 +54,7 @@ const SYNC_MANIFEST = [
     src: "grainulation-print.css",
     dst: "grainulation-print.css",
     category: "stylesheet",
-    description: "Shared print stylesheet; referenced by <link media=\"print\">.",
+    description: 'Shared print stylesheet; referenced by <link media="print">.',
   },
   {
     src: "grainulation-tokens.css",
@@ -67,7 +73,13 @@ const SYNC_MANIFEST = [
 
 // ── Argv parsing (minimal, built-in) ──────────────────────────────────────────
 function parseArgs(argv) {
-  const out = { target: null, strict: false, dryRun: false, verbose: false, help: false };
+  const out = {
+    target: null,
+    strict: false,
+    dryRun: false,
+    verbose: false,
+    help: false,
+  };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--target" || a === "-t") out.target = argv[++i];
@@ -99,7 +111,8 @@ function printHelp() {
       "",
       "Manifest (current shared assets):",
       ...SYNC_MANIFEST.map(
-        (a) => `  ${a.src.padEnd(32)}${a.optional ? "[optional] " : "           "}${a.description}`,
+        (a) =>
+          `  ${a.src.padEnd(32)}${a.optional ? "[optional] " : "           "}${a.description}`,
       ),
       "",
     ].join("\n"),
@@ -137,12 +150,21 @@ function main() {
   } else {
     const s = statSync(target);
     if (!s.isDirectory()) {
-      process.stderr.write(`sync-assets: --target is not a directory: ${target}\n`);
+      process.stderr.write(
+        `sync-assets: --target is not a directory: ${target}\n`,
+      );
       return 2;
     }
   }
 
-  const report = { copied: 0, unchanged: 0, overwritten: 0, skipped: 0, missingSources: 0, conflicts: 0 };
+  const report = {
+    copied: 0,
+    unchanged: 0,
+    overwritten: 0,
+    skipped: 0,
+    missingSources: 0,
+    conflicts: 0,
+  };
   const lines = [];
 
   for (const asset of SYNC_MANIFEST) {
@@ -152,11 +174,14 @@ function main() {
     if (!existsSync(srcPath)) {
       if (asset.optional) {
         report.skipped++;
-        if (args.verbose) lines.push(`  skipped  ${asset.src} (optional source missing)`);
+        if (args.verbose)
+          lines.push(`  skipped  ${asset.src} (optional source missing)`);
         continue;
       }
       report.missingSources++;
-      lines.push(`  MISSING  ${asset.src} (required source not found at ${srcPath})`);
+      lines.push(
+        `  MISSING  ${asset.src} (required source not found at ${srcPath})`,
+      );
       continue;
     }
 
@@ -173,7 +198,9 @@ function main() {
       }
       if (args.strict) {
         report.conflicts++;
-        lines.push(`  CONFLICT  ${asset.dst} (differs from source; --strict refuses overwrite)`);
+        lines.push(
+          `  CONFLICT  ${asset.dst} (differs from source; --strict refuses overwrite)`,
+        );
         continue;
       }
       if (args.dryRun) {
@@ -220,11 +247,11 @@ function main() {
   return 0;
 }
 
-const isDirect = process.argv[1] && (
-  process.argv[1] === fileURLToPath(import.meta.url) ||
-  process.argv[1].endsWith("sync-assets.js") ||
-  process.argv[1].endsWith("sync-assets")
-);
+const isDirect =
+  process.argv[1] &&
+  (process.argv[1] === fileURLToPath(import.meta.url) ||
+    process.argv[1].endsWith("sync-assets.js") ||
+    process.argv[1].endsWith("sync-assets"));
 if (isDirect) {
   process.exit(main());
 }
