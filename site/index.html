@@ -98,7 +98,7 @@
 <section class="what-is" id="what"><div class="container"><div class="what-box rv"><h2>What is <strong style="color:#fff;font-size:110%"><span style="color:var(--accent)">b</span>arn</strong>?</h2><p>If you are using <strong style="color:#fff;font-size:110%"><span style="color:#fbbf24">w</span>heat</strong>, <strong style="color:#fff;font-size:110%"><span style="color:var(--accent)">b</span>arn</strong> is already working for you. It handles sprint detection, manifest generation, HTML templates, and PDF building behind the scenes.</p><p>This page is for developers who want to use <strong style="color:#fff;font-size:110%"><span style="color:var(--accent)">b</span>arn</strong>'s tools directly or build on top of them — for example, creating custom integrations or extending <strong style="color:#fff;font-size:110%"><span style="color:#9ca3af">gr</span>ainulation</strong> with new packages.</p></div></div></section>
 <hr class="sep">
 <section class="quickstart" id="quickstart"><div class="container"><div class="qs-label rv">Quick start — 3 commands</div><div class="qs-steps"><div class="qs-step rv rv-d1"><div class="qs-num">1</div><h3>Detect sprints</h3><p>Scan any repo for research sprints by finding claims.json files and reading git history.</p><div class="copy-wrap"><pre class="qs-code"><code><span class="dim">$</span> npx @grainulation/barn detect-sprints</code></pre><button class="copy-btn" onclick="copyText(this,'npx @grainulation/barn detect-sprints')">Copy</button></div><div class="qs-output">Found 3 sprints:
-  sprints/extract-payments-service (active, 14 claims)
+  sprints/consolidate-auth-to-monolith (active, 14 claims)
   sprints/auth-scaling (active, 23 claims)
   sprints/perf-baseline (done, 41 claims)</div></div><div class="qs-step rv rv-d2"><div class="qs-num">2</div><h3>Generate manifest</h3><p>Build a compact JSON index. New AI sessions read this instead of scanning everything.</p><div class="copy-wrap"><pre class="qs-code"><code><span class="dim">$</span> npx @grainulation/barn generate-manifest</code></pre><button class="copy-btn" onclick="copyText(this,'npx @grainulation/barn generate-manifest')">Copy</button></div><div class="qs-output">Manifest written to wheat-manifest.json (4.2KB)
   Topics: 6  Claims: 14  Files: 8</div></div><div class="qs-step rv rv-d3"><div class="qs-num">3</div><h3>Build PDF</h3><p>Convert markdown research output to a styled PDF document.</p><div class="copy-wrap"><pre class="qs-code"><code><span class="dim">$</span> npx @grainulation/barn build-pdf brief.md</code></pre><button class="copy-btn" onclick="copyText(this,'npx @grainulation/barn build-pdf brief.md')">Copy</button></div><div class="qs-output">Written: brief.pdf (142KB, 4 pages)</div></div></div></div></section>
@@ -113,7 +113,7 @@
           <h4>Find all sprints</h4>
           <p>Scan the repo for claims.json files. <strong style="color:#fff;font-size:110%"><span style="color:var(--accent)">b</span>arn</strong> uses git history to rank sprints by recency and identify which one is active.</p>
           <div class="ex-output"><span class="success">Found 3 sprints:</span>
-  sprints/extract-payments-service  <span class="hl">active</span>  <span class="num">14</span> claims  2h ago
+  sprints/consolidate-auth-to-monolith  <span class="hl">active</span>  <span class="num">14</span> claims  2h ago
   sprints/auth-scaling       <span class="hl">active</span>  <span class="num">23</span> claims  1d ago
   sprints/perf-baseline      done    <span class="num">41</span> claims  5d ago</div>
         </div>
@@ -122,7 +122,7 @@
       <div class="ex-step">
         <div class="ex-dot store">2</div>
         <div class="ex-body">
-          <div class="ex-cmd">$ npx @grainulation/barn generate-manifest --root sprints/extract-payments-service</div>
+          <div class="ex-cmd">$ npx @grainulation/barn generate-manifest --root sprints/consolidate-auth-to-monolith</div>
           <h4>Build the manifest</h4>
           <p>Generate a compact JSON index of topics, claims, and files. New AI sessions read this instead of scanning the full repo.</p>
           <div class="ex-output"><span class="success">Manifest written to wheat-manifest.json (4.2KB)</span>
@@ -138,7 +138,7 @@
           <h4>Export for stakeholders</h4>
           <p>Convert the compiled brief to a styled PDF. Paginated, branded, ready to attach to a Jira ticket or drop in Slack.</p>
           <div class="ex-output"><span class="success">Written: brief.pdf (142KB, 4 pages)</span>
-  <span class="dim">Title:</span>  Extract Payments Service — Decision Brief
+  <span class="dim">Title:</span>  Consolidate Auth To Monolith — Decision Brief
   <span class="dim">Claims:</span> <span class="num">14</span> compiled, <span class="num">3</span> conflicts resolved
   <span class="dim">Evidence:</span> <span class="num">2</span> tested, <span class="num">8</span> documented, <span class="num">4</span> web</div>
         </div>
