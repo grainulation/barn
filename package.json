@@ -82,7 +82,7 @@
   "scripts": {
     "start": "node bin/barn.js serve",
     "serve": "node bin/barn.js serve",
-    "test": "node test/basic.test.js && node --test test/shared-utils.test.js test/server.test.js test/ui-smoke.test.js test/mcp-crash.test.js test/llms-txt-lint.test.js",
+    "test": "node test/basic.test.js && node --test test/shared-utils.test.js test/server.test.js test/ui-smoke.test.js test/mcp-crash.test.js test/llms-txt-lint.test.js test/tarball.test.js",
     "format": "npx prettier@3.3 --write .",
     "format:check": "npx prettier@3.3 --check ."
   },
